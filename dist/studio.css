@@ -62,3 +62,10 @@ main{margin:14px 22px;gap:14px;grid-template-columns:238px minmax(350px,1fr) 330
 .preparation-steps li+li{margin-top:15px}
 .preparation-steps li::marker{color:var(--accent);font-weight:600}
 @media(max-width:680px){.research-preparation{margin-top:22px;padding:18px 16px;font-size:13px;line-height:1.8}.research-preparation h3{font-size:20px}.preparation-task{padding:12px 14px}.preparation-steps{padding-left:20px}.preparation-steps li{padding-left:4px}}
+
+/* Age-transfer study figure, following Preparation. */
+.age-transfer-research{margin-top:28px}
+.research-figure-caption{padding:8px 24px 15px;color:#c1d1d5;font-size:13px;line-height:1.85}
+.research-figure-caption p{margin:18px 0}
+.research-figure-caption strong{color:#edf4f1;font-weight:600}
+@media(max-width:680px){.age-transfer-research{margin-top:22px}.research-figure-caption{padding:0 16px 4px;font-size:12px;line-height:1.8}}

@@ -11,8 +11,19 @@ function setZoom(value){
   if(zoom===1){viewport.scrollTo(0,0);return;}
   viewport.scrollTo(x*zoom-viewport.clientWidth/2,y*zoom-viewport.clientHeight/2);
 }
-for(const id of ['expand-method','method-figure-preview'])$(id).addEventListener('click',event=>{
-  event.preventDefault();opener=event.currentTarget;figureDialog.showModal();setZoom(1);
+const figures=[
+  {openers:['expand-method','method-figure-preview'],eyebrow:'FIGURE 1 · PROPOSED STUDY',title:'Heartverse framework',image:'./media/research/Heartverse_method_paper.png',width:3840,height:2410,original:'./media/research/Heartverse_method_paper.pdf',originalLabel:'Open PDF ↗',alt:'Enlarged Figure 1: proposed developmental physiology-guided ECG augmentation and pediatric arrhythmia detection framework.'},
+  {openers:['expand-age-transfer','age-transfer-preview'],eyebrow:'FIGURE 2 · AGE TRANSFER',title:'Study design for ECG conduction classification',image:'./media/research/Figure_2_age_transfer_preview.png',width:3840,height:2666,original:'./media/research/Figure_2_age_transfer.png',originalLabel:'Open original PNG ↗',alt:'Enlarged Figure 2: ECG preprocessing, adult pretraining, young-adult evaluation, exploratory pediatric adaptation, shared CNN architecture, and evidence across age groups.'}
+];
+for(const figure of figures)for(const id of figure.openers)$(id).addEventListener('click',event=>{
+  event.preventDefault();opener=event.currentTarget;
+  figureDialog.querySelector('.method-expanded-header .eyebrow').textContent=figure.eyebrow;
+  $('method-expanded-title').textContent=figure.title;
+  const img=viewport.querySelector('img');
+  img.width=figure.width;img.height=figure.height;img.alt=figure.alt;img.src=figure.image;
+  const original=figureDialog.querySelector('.method-zoom-toolbar a');
+  original.href=figure.original;original.textContent=figure.originalLabel;
+  figureDialog.showModal();setZoom(1);
 });
 $('close-method-figure').onclick=()=>figureDialog.close();
 $('method-zoom-in').onclick=()=>setZoom(zoom+.5);
