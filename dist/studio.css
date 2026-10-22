@@ -69,3 +69,22 @@ main{margin:14px 22px;gap:14px;grid-template-columns:238px minmax(350px,1fr) 330
 .research-figure-caption p{margin:18px 0}
 .research-figure-caption strong{color:#edf4f1;font-weight:600}
 @media(max-width:680px){.age-transfer-research{margin-top:22px}.research-figure-caption{padding:0 16px 4px;font-size:12px;line-height:1.8}}
+
+/* Age-group results with accessible, horizontally scrollable tables. */
+.research-results{margin-top:28px;padding:24px;border:1px solid #b0d2d52a;border-radius:12px;background:#beddd603;color:#c1d1d5;font-size:14px;line-height:1.85;min-width:0}
+.research-results>h3{font:500 23px Manrope,sans-serif;letter-spacing:-.5px;color:var(--ink);margin:0 0 20px}
+.research-results strong{color:#edf4f1;font-weight:600}
+.results-intro{padding:16px 18px;border-left:2px solid #93baa7;border-radius:0 6px 6px 0;background:#b8d6ce06;margin:0}
+.results-group{padding-top:26px;margin-top:26px;border-top:1px solid var(--line)}
+.results-group h4{font:600 19px Manrope,sans-serif;letter-spacing:-.3px;color:#d4e8df;margin:0 0 16px}
+.results-group p{margin:14px 0}.results-group p:last-child{margin-bottom:0}
+.results-group ul{margin:14px 0;padding-left:23px}.results-group li{padding-left:4px}.results-group li+li{margin-top:7px}.results-group li::marker{color:var(--accent)}
+.results-table-wrap{margin:22px 0;border:1px solid #b0d2d52a;border-radius:9px;overflow-x:auto;max-width:100%;scrollbar-width:thin;scrollbar-color:#6f929b transparent}
+.results-table{width:100%;border-collapse:collapse;text-align:left;line-height:1.6;font-size:13px}
+.results-table th,.results-table td{padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+.results-table thead th{font-weight:600;color:#d5e7e2;background:#afd8cd0b}
+.results-table tbody th{font-weight:400}.results-table tbody tr:last-child th,.results-table tbody tr:last-child td{border-bottom:0}
+.results-table td{font-variant-numeric:tabular-nums;white-space:nowrap}.results-table tbody tr:first-child{background:#94d7c706}
+.infant-results-table{min-width:560px}.infant-results-table th:first-child{width:48%}
+.results-figure{margin-top:30px}.results-figure .method-figure-heading h4{font:500 20px Manrope,sans-serif;letter-spacing:-.4px;color:var(--ink);margin:8px 0 0}
+@media(max-width:680px){.research-results{margin-top:22px;padding:18px 16px;font-size:13px;line-height:1.8}.research-results>h3{font-size:21px;line-height:1.4}.results-intro{padding:12px 14px}.results-group{padding-top:22px;margin-top:22px}.results-group h4{font-size:18px;line-height:1.5}.results-table{font-size:12px}.results-table th,.results-table td{padding:12px}.results-figure .method-figure-heading h4{font-size:18px;line-height:1.5}.results-figure .method-figure-actions{flex-shrink:1}}

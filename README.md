@@ -11,6 +11,7 @@ An interactive anatomy studio for exploring published heart-size references, tra
 - An illustrative cardiac cycle with play/pause, phase, and speed controls.
 - A separate 49-frame released Time2Track motion comparison.
 - The proposed Heartverse ECG research framework, its complete Figure 1 caption, and the original downloadable PDF.
+- Study preparation, the Figure 2 age-transfer design, and age-group classification results with both comparison tables and the Figure 3 ROC plots.
 
 ## Scientific scope
 
@@ -18,7 +19,7 @@ The numerical output is left-ventricular end-diastolic cavity volume. The anatom
 
 Pediatric settings use exact published BSA rows from [Xu et al. (2025), Table 4](https://pmc.ncbi.nlm.nih.gov/articles/PMC12182818/#tbl0020), covering a study population aged 4–18. BSA is not an age estimate. Adult-men values use the separate [SCMR 2025 reference update, Table 3](https://pmc.ncbi.nlm.nih.gov/articles/PMC12159681/#tbl0015). These populations do not form a continuous developmental growth curve.
 
-The research figure describes a **proposed study**, with proposed ages 1–16 subject to available patients and reliable rhythm labels. Its diagrams are schematic, not experimental results. This website does not perform ECG generation, classification, or clinical diagnosis. The Time2Track example is independent of the size controls and does not validate the illustrative animation.
+Figure 1 describes a **proposed study**, with proposed ages 1–16 subject to available patients and reliable rhythm labels. Its diagrams are schematic, not experimental results. This website does not perform ECG generation, classification, or clinical diagnosis. The Time2Track example is independent of the size controls and does not validate the illustrative animation.
 
 ## Run locally
 
