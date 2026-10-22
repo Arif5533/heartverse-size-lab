@@ -96,3 +96,7 @@ main{margin:14px 22px;gap:14px;grid-template-columns:238px minmax(350px,1fr) 330
 .transferability-testing>.age-transfer-research{margin-top:24px}
 .transferability-testing>.research-results{padding:28px 0 0;border:0;border-top:1px solid var(--line);border-radius:0;background:none}
 @media(max-width:680px){.transferability-testing{margin-top:22px;padding:18px 16px}.transferability-heading h3{font-size:23px;line-height:1.4}.transferability-heading p{font-size:13px}.transferability-testing>.age-transfer-research{margin-top:20px}.transferability-testing>.research-results{padding-top:22px}}
+
+/* Next steps, with the two generator arms nested under step 3. */
+.next-steps-list ul{margin:10px 0 0;padding-left:22px;list-style:disc}
+.next-steps-list ul li+li{margin-top:6px}
