@@ -112,3 +112,15 @@ main{margin:14px 22px;gap:14px;grid-template-columns:238px minmax(350px,1fr) 330
 .transferability-summary{margin-top:28px;padding:20px 22px;border-left:2px solid #93baa7;border-radius:0 8px 8px 0;background:#b8d6ce09;color:#c1d1d5;font-size:14px;line-height:1.9}
 .transferability-summary p{margin:0}.transferability-summary strong{font-weight:600;color:#edf4f1}
 @media(max-width:680px){.transferability-summary{margin-top:22px;padding:16px;font-size:13px;line-height:1.85}}
+
+/* Future uses of the motion example, shared by the sidebar and expanded viewer. */
+.motion-planned-uses{margin:14px 0 18px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;line-height:1.65}
+.motion-planned-uses h3{margin:0 0 12px;color:var(--green);font:600 10px Manrope,sans-serif;letter-spacing:.5px}
+.motion-planned-uses dl{margin:0}
+.motion-planned-uses dl>div+div{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.motion-planned-uses dt{font-weight:600;color:var(--ink)}
+.motion-planned-uses dd{margin:3px 0 0;color:#a5bdc3}
+#motion-detail .motion-planned-uses{font-size:12px}
+#motion-detail .motion-planned-uses h3{font-size:11px}
+@media(min-width:681px){#motion-detail .motion-planned-uses dl>div{display:grid;grid-template-columns:190px minmax(0,1fr);gap:18px}#motion-detail .motion-planned-uses dd{margin:0}}
+@media(max-width:800px){.motion-planned-uses{font-size:12px}.motion-planned-uses h3{font-size:11px}}
