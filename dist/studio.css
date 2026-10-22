@@ -100,3 +100,10 @@ main{margin:14px 22px;gap:14px;grid-template-columns:238px minmax(350px,1fr) 330
 /* Next steps, with the two generator arms nested under step 3. */
 .next-steps-list ul{margin:10px 0 0;padding-left:22px;list-style:disc}
 .next-steps-list ul li+li{margin-top:6px}
+
+/* Research purpose, before the main framework figure. */
+.research-overview{margin-bottom:28px;padding:24px;border:1px solid #b0d2d52a;border-radius:12px;background:#beddd603;color:#c1d1d5;font-size:14px;line-height:1.85}
+.research-overview h3{font:600 19px Manrope,sans-serif;letter-spacing:-.3px;color:var(--ink);margin:0 0 12px}
+.research-overview p{margin:0}
+.overview-block+.overview-block{margin-top:22px;padding-top:22px;border-top:1px solid var(--line)}
+@media(max-width:680px){.research-overview{margin-bottom:22px;padding:18px 16px;font-size:13px;line-height:1.8}.research-overview h3{font-size:18px}.overview-block+.overview-block{margin-top:18px;padding-top:18px}}
