@@ -107,3 +107,8 @@ main{margin:14px 22px;gap:14px;grid-template-columns:238px minmax(350px,1fr) 330
 .research-overview p{margin:0}
 .overview-block+.overview-block{margin-top:22px;padding-top:22px;border-top:1px solid var(--line)}
 @media(max-width:680px){.research-overview{margin-bottom:22px;padding:18px 16px;font-size:13px;line-height:1.8}.research-overview h3{font-size:18px}.overview-block+.overview-block{margin-top:18px;padding-top:18px}}
+
+/* Concluding paragraph after all transferability figures. */
+.transferability-summary{margin-top:28px;padding:20px 22px;border-left:2px solid #93baa7;border-radius:0 8px 8px 0;background:#b8d6ce09;color:#c1d1d5;font-size:14px;line-height:1.9}
+.transferability-summary p{margin:0}.transferability-summary strong{font-weight:600;color:#edf4f1}
+@media(max-width:680px){.transferability-summary{margin-top:22px;padding:16px;font-size:13px;line-height:1.85}}
