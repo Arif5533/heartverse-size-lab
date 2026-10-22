@@ -51,3 +51,14 @@ main{margin:14px 22px;gap:14px;grid-template-columns:238px minmax(350px,1fr) 330
 .method-expanded-note{padding:0 24px;margin:12px 0 17px;color:#9cb7bf;font-size:11px;line-height:1.5;flex-shrink:0}
 @media(max-width:680px){#evidence{width:calc(100vw - 16px);max-height:94dvh}#evidence>.dialog-header{padding:18px 16px}#evidence>.dialog-header h2{font-size:23px}#evidence>.dialog-body{padding:0 14px 22px}#evidence .dialog-intro{font-size:12px;margin:18px 0}.method-figure-heading{flex-direction:column;align-items:flex-start;padding:16px;gap:15px}.method-figure-heading h3{font-size:18px}.method-figure-actions{flex-wrap:wrap}.method-figure-actions a,.method-figure-actions button{font-size:11px;padding:9px 10px}.method-figure-preview{margin:0 10px;border-radius:4px}.method-figure-preview>span{display:none}#method-figure-caption{padding:0 16px 4px;font-size:12px;line-height:1.8}#method-figure-caption p:last-child{padding:12px}.research-references-heading{margin-top:28px}#method-figure-dialog{width:calc(100vw - 12px);max-height:96dvh}.method-expanded-header{padding:16px 14px}.method-expanded-header h2{font-size:19px}.method-zoom-toolbar{padding:0 14px 12px;gap:6px}.method-zoom-toolbar>div{gap:3px}.method-zoom-toolbar button{min-width:30px;padding:0 7px}.method-zoom-toolbar output{min-width:43px}.method-zoom-toolbar #method-zoom-fit{margin-left:2px}.method-zoom-toolbar a{font-size:10px;padding:8px}.method-image-viewport{margin:0 14px;max-height:calc(96dvh - 190px)}.method-expanded-note{padding:0 14px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){.method-figure-preview>span{transition:none}}
+
+/* Study preparation follows the method figure and its caption. */
+.research-preparation{margin-top:28px;padding:24px;border:1px solid #b0d2d52a;border-radius:12px;background:#beddd603;color:#c1d1d5;font-size:14px;line-height:1.85}
+.research-preparation h3{font:500 22px Manrope,sans-serif;letter-spacing:-.5px;color:var(--ink);margin:0 0 18px}
+.research-preparation strong{font-weight:600;color:#edf4f1}
+.preparation-task{margin:0;padding:16px 18px;border-left:2px solid #93baa7;border-radius:0 6px 6px 0;background:#b8d6ce06}
+.preparation-steps{margin:22px 0 0;padding-left:24px}
+.preparation-steps li{padding-left:7px}
+.preparation-steps li+li{margin-top:15px}
+.preparation-steps li::marker{color:var(--accent);font-weight:600}
+@media(max-width:680px){.research-preparation{margin-top:22px;padding:18px 16px;font-size:13px;line-height:1.8}.research-preparation h3{font-size:20px}.preparation-task{padding:12px 14px}.preparation-steps{padding-left:20px}.preparation-steps li{padding-left:4px}}
