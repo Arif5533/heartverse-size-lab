@@ -1,0 +1,2 @@
+Source: Human_heart_3d_model by marxtrax, CC BY 4.0. Original credit in license.txt.
+Changes: converted legacy specular-glossiness material to metallic-roughness, removed unused emission and animation definitions; app adjusts surface colors, lighting, centering and uniform visual scale. No pediatric reconstruction or anatomical validation is claimed.

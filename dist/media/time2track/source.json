@@ -1,0 +1,15 @@
+{
+  "title": "Shift-invariant baseline \u00b7 Subject A",
+  "repository": "https://github.com/Chrisa142857/time2track",
+  "commit": "0a9da5232b6902dccf2fcf3db0a50019fe4c8745",
+  "source": "example_ecg_gif/ecg_heart_shift_invariant_8L_256d_49frames_subjectA.gif",
+  "frames": 49,
+  "columns": 7,
+  "width": 768,
+  "height": 384,
+  "adaptation": "Fixed whitespace crops, downsampling, and WebP frame atlas. All frames retained in order; colors and geometry unaltered.",
+  "timing": "Source GIF does not specify frame durations. Player uses an adjustable 25 fps display rate, not measured physiological timing.",
+  "license": "MIT",
+  "credit": "Ziquan Wei, Tingting Dan, Guorong Wu (2026)",
+  "relationship": "Published baseline comparison from the Time2Track repository. Independent of the Heartverse size reference and illustrative 4D animation. No ECG inference is run in this site."
+}
