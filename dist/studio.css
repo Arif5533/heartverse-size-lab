@@ -194,3 +194,13 @@ main{margin:14px 22px;gap:14px;grid-template-columns:238px minmax(350px,1fr) 330
 .figure-answer{margin:4px 0 18px;padding:12px 16px;border:1px solid #b0d2d52a;border-radius:8px;background:#b8d6ce06}
 .figure-answer summary{cursor:pointer;color:#cfe6dc;font-weight:600}
 .figure-answer p{margin:12px 0 0}
+/* Reading structure: numbered parts with a question and a key finding. */
+.part-question{margin:0 0 12px;font-size:14px;line-height:1.8;color:#c9d8dc}
+.part-question strong{color:#edf4f1;font-weight:600}
+.key-finding{margin:20px 0 0;padding:14px 18px;border-left:3px solid #9fd6bd;border-radius:0 8px 8px 0;background:#9fd6bd10;color:#d3e3e0;font-size:14px;line-height:1.8}
+.key-finding strong{color:#f1f7f4;font-weight:600}
+.transferability-testing>.research-preparation{margin-top:24px}
+.part-eyebrow{margin-bottom:10px}
+.research-next-steps .part-question{margin-bottom:18px}
+.research-appendix{padding-top:30px;border-top:1px solid var(--line)}
+@media(max-width:680px){.part-question,.key-finding{font-size:13px}.key-finding{padding:12px 14px}}

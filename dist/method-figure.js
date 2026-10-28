@@ -46,7 +46,7 @@ figureDialog.addEventListener('click',event=>{
 // Jump menu for the long research panel. It sits in the sticky header and
 // highlights the section currently in view.
 const researchDialog=$('evidence');
-const researchSections=[['Main idea','.research-overview'],['Figure 1','#method-figure-title'],['Progress','#progress-title'],['Preparation','#preparation-title'],['Transferability','#transferability-title'],['Figure 2','#age-transfer-title'],['Results','#results-title'],['Figure 3','#results-figure-title'],['Figure 4','#ecg-examples-title'],['Normal ECG by age','#profiles-title'],['Figure 5','#growing-up-title'],['Figure 6','#profiles-figure-title'],['Simulator','#simulator-title'],['Figure 7','#simulator-method-title'],['Figure 8','#simulated-ecgs-title'],['Figure 9','#real-vs-synthetic-title'],['Figure 10','#simulator-checks-title'],['Next steps','#next-steps-title'],['References','.research-references-heading']]
+const researchSections=[['Overview','.research-overview'],['Plan · Figure 1','#method-figure-title'],['Progress','#progress-title'],['1 · Transferability','#transferability-title'],['2 · Normal ECG by age','#profiles-title'],['3 · Simulator','#simulator-title'],['4 · Next steps','#next-steps-title'],['Appendix','.research-references-heading']]
   .map(([label,selector])=>{const el=researchDialog.querySelector(selector);return el&&{label,target:el.closest('section')||el};}).filter(Boolean);
 const researchNav=document.createElement('nav');researchNav.className='research-nav';researchNav.setAttribute('aria-label','Research sections');
 researchNav.innerHTML=researchSections.map(({label},i)=>`<button type="button" data-section="${i}">${label}</button>`).join('');
