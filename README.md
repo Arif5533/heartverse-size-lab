@@ -8,7 +8,8 @@ An interactive anatomy studio for exploring published heart-size references, tra
 
 - Pediatric reference volumes for girls and boys across published body-surface-area settings, plus a separate adult-men reference.
 - Transparent, dot, mesh, and color-detail anatomy, with orbit, zoom, view presets, and image export.
-- An illustrative cardiac cycle with play/pause, phase, and speed controls.
+- An illustrative cardiac cycle with play/pause, phase, and speed controls. At 1× it beats at the median heart rate of the selected ECG age group.
+- A sample ECG synchronised with the cycle: a lead II strip on standard paper and a 3D ECG loop (vectorcardiogram) around the heart, with an ECG age control for children aged 1–16 (by sex) and adult men aged 16–89.
 - A separate 49-frame released Time2Track motion comparison.
 - The proposed Heartverse ECG research framework, its complete Figure 1 caption, and the original downloadable PDF.
 - Study preparation, the Figure 2 age-transfer design, and age-group classification results with both comparison tables and the Figure 3 ROC plots.
@@ -18,6 +19,8 @@ An interactive anatomy studio for exploring published heart-size references, tra
 The numerical output is left-ventricular end-diastolic cavity volume. The anatomical mesh is an artistic illustration; it is not a segmented pediatric scan or calibrated whole-heart measurement. Uniform visual scaling follows the cube root of the volume ratio. The main 4D motion is simulated for illustration.
 
 Pediatric settings use exact published BSA rows from [Xu et al. (2025), Table 4](https://pmc.ncbi.nlm.nih.gov/articles/PMC12182818/#tbl0020), covering a study population aged 4–18. BSA is not an age estimate. Adult-men values use the separate [SCMR 2025 reference update, Table 3](https://pmc.ncbi.nlm.nih.gov/articles/PMC12159681/#tbl0015). These populations do not form a continuous developmental growth curve.
+
+The sample ECG uses median heart rate, PR, P and QRS duration, Bazett QTc and frontal axes from [Rijnbeek et al. (2001)](https://doi.org/10.1053/euhj.2000.2399) for children aged 1–16 and [Rijnbeek et al. (2014)](https://doi.org/10.1016/j.jelectrocard.2014.07.022) for adult men. Wave shapes, front–back loop components, T-wave size, adult amplitudes, the pediatric T-wave axis, and the electromechanical delay are illustrative. It is not computed from the 3D mesh, heart size does not change it, and it is not a patient ECG or diagnostic.
 
 Figure 1 describes a **proposed study**, with proposed ages 1–16 subject to available patients and reliable rhythm labels. Its diagrams are schematic, not experimental results. This website does not perform ECG generation, classification, or clinical diagnosis. The Time2Track example is independent of the size controls and does not validate the illustrative animation.
 
@@ -41,7 +44,9 @@ All application asset paths are relative so the site works at the `/heartverse-s
 
 - `dist/index.html`, `dist/style.css`, `dist/studio.css`: interface and responsive design.
 - `dist/app.js`, `dist/appearance.js`: anatomy viewer, appearance, and illustrative motion.
-- `dist/reference.js`: published reference values and bounded lookup.
+- `dist/reference.js`: published reference values and bounded lookup, including the cited ECG norms.
+- `dist/ecg.js`: sample ECG and 3D loop model.
+- `checks/ecg.mjs`: measures every sample ECG and checks it against the cited norms (`node checks/ecg.mjs`).
 - `dist/research-motion.js`: released motion-example player.
 - `dist/method-figure.js`: research figure enlargement and zoom.
 - `dist/media/research/`: original method PDF, web image, and exact caption.

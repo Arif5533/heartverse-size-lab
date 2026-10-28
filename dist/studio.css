@@ -143,3 +143,28 @@ main{margin:14px 22px;gap:14px;grid-template-columns:238px minmax(350px,1fr) 330
 #evidence>.dialog-header .research-nav button{width:auto;height:auto;display:block;font-size:11px;line-height:1.2;white-space:nowrap}#evidence>.dialog-header .research-nav button.active{border-color:#d8c49f}
 #evidence>.dialog-header .research-nav button.active{color:#122027;background:#d8c49f}#evidence .source-item .source-meta{font-size:10px}
 @media(max-width:480px){.view-bottom{bottom:44px}.scene-caption{bottom:8px;padding:0 12px;line-height:1.3}}
+
+/* Sample ECG card: lead II strip synchronised with the 4D cycle. */
+.ecg-card{position:absolute;right:16px;bottom:157px;z-index:4;width:268px;padding:11px 13px 10px;border:1px solid #bedbc22b;border-radius:10px;background:linear-gradient(120deg,#213032d9,#162126d9);backdrop-filter:blur(12px);box-shadow:0 15px 35px #0003}
+.ecg-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ecg-head>span{font-size:10px;letter-spacing:1.2px;color:#a3b5ae}
+.ecg-head button{font-size:10px;padding:4px 9px;border:1px solid #bedbc22b;border-radius:999px;color:#9fb3b4}
+.ecg-head button[aria-pressed="true"]{color:#122027;background:#d8c49f;border-color:#d8c49f}
+.ecg-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:9px 0 7px}
+.ecg-controls label{font-size:11px;color:#c5d8da}
+.ecg-controls select{width:auto;flex:none;padding:5px 8px;font-size:11px;border-radius:6px;background:#c9e7db09;border:1px solid #bfdbd32c;color:var(--ink)}
+#ecg-strip{display:block;width:100%;height:86px;border-radius:5px;background:#0b141880}
+.ecg-readout{margin-top:8px;font-size:11px;color:#c5d8da;font-variant-numeric:tabular-nums}
+.ecg-readout b{color:#f0d9ad;font-weight:600;font-size:13px}.ecg-readout i{font-style:normal;color:#5d7378;margin:0 3px}
+.ecg-card small{display:block;margin-top:4px;font-size:10px;line-height:1.4;color:#93a8ab}
+@media(max-width:1100px){.ecg-card{width:260px;right:14px}}
+@media(min-width:1600px){.ecg-card{width:300px;right:18px}}
+/* Phones and narrow tablets: the ECG gets its own band at the bottom of the
+   viewer; the heart canvas and bottom controls move up by the same amount. */
+@media(max-width:800px){
+  .viewer{height:986px;min-height:986px}
+  #canvas-wrap,body.focus-mode #canvas-wrap{bottom:440px}
+  .motion-panel,.view-bottom,.scene-caption,.volume-card,.viewer-status{margin-bottom:246px}
+  .ecg-card{left:12px;right:12px;bottom:12px;width:auto}
+  body.focus-mode .viewer{min-height:946px}
+}
