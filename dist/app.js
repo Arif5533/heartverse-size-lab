@@ -1,19 +1,22 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from './vendor/GLTFLoader.js';
-import { reference, lookup, adultReference, lookupAdult, ecgReference } from './reference.js?v=2';
-import { ecgBands, defaultBand, ecgParameters, buildECG, LEAD_II } from './ecg.js?v=2';
+import { reference, lookup, adultReference, lookupAdult, ecgReference, physiologyReference, lookupHeight, physiologyAt } from './reference.js?v=3';
+import { ecgBands, defaultBand, ecgParameters, buildECG, LEAD_II } from './ecg.js?v=3';
 import { CYCLE, cycleSize } from './cycle-profile.js?v=1';
 import { createContrastMaterial } from './appearance.js';
 
 const $=id=>document.getElementById(id);
-let population='children', sex='female', current=lookup(1,'female');
+let population='children', sex='female', sizeBy='bsa', current=lookup(1,'female');
 const sources=[
   {tag:'MOTION EXAMPLE · RELEASED RESEARCH',title:'Time2Track repository — shift-invariant baseline',text:'The side panel replays the released Subject A animation: the source baseline model’s mesh beside the source’s ground truth. Heartverse makes no predictions of its own. All 49 frames are retained. This baseline example is independent of the size explorer and its illustrative motion; the site does not run ECG inference. Playback uses an adjustable display rate because the GIF has no frame durations.',url:'https://github.com/Chrisa142857/time2track/blob/0a9da5232b6902dccf2fcf3db0a50019fe4c8745/example_ecg_gif/ecg_heart_shift_invariant_8L_256d_49frames_subjectA.gif'},
   {tag:'SAMPLE ECG · CHILDREN · 2001',title:'Rijnbeek et al. — New normal limits for the paediatric electrocardiogram',text:'1912 healthy Dutch children, 12-lead ECGs at 1200 Hz. The sample ECG uses the median heart rate, PR, P and QRS duration, Bazett QTc, P and QRS axes, and lead II P and R amplitudes for boys and girls aged 1–16. Wave shapes, the T-wave direction and front–back loop components are illustrative.',url:ecgReference.pediatric.doi},
   {tag:'SAMPLE ECG · ADULTS · 2014',title:'Rijnbeek et al. — Normal values of the electrocardiogram for ages 16–90 years',text:'13,354 cardiologically healthy adults (7326 men). The adult-men sample ECG uses median heart rate, PQ (PR), P and QRS duration, Bazett QTc, and P, QRS and T axes by age group. Adult wave amplitudes are illustrative.',url:ecgReference.adultMen.doi},
   {tag:'3D MODEL · CC BY 4.0',title:'Human_heart_3d_model — marxtrax',text:'A textured anatomical cutaway with valves and internal muscle detail. Adapted materials, lighting, orientation and uniform scale. This illustration is not a pediatric scan and does not establish age-specific morphology.',url:'https://sketchfab.com/3d-models/human-heart-3d-model-5e442ad98b574fdf844432b246fcf323'},
   {tag:'NUMERICAL FOUNDATION · 2025', title:'Xu et al. — Pediatric MRI reference centiles', text:'191 healthy Chinese children, ages 4–18. Table 4 supplies the 50th and 5th–95th centiles for LV end-diastolic volume by body surface area and sex. Smooth segmentation includes trabeculations and papillary muscles in cavity volume.',url:reference.table},
+  {tag:'HEART FUNCTION · CHILDREN · 2025',title:'Xu et al. — LVESV, stroke volume and LV mass centiles (Tables 5–7)',text:'The same 191 children, BSA rows and segmentation as the volume slider. The function panel shows the 5th, 50th and 95th centiles of end-systolic volume, stroke volume and LV mass at the selected BSA. Ejection fraction (Table 2) and heart rate during MRI (Table 1) are reported by sex, not by BSA.',url:physiologyReference.bsa.tables.lvsv},
+  {tag:'HEIGHT · CHILDREN · 2023',title:'Voges et al. — Volumes and mass by body height (SCMR 2025 Tables 24, 26, 28)',text:'154 clinically referred children without cardiovascular disease, UK and Germany, 1.5T. Height mode uses LV volumes with papillary muscles in the cavity and the matching mass without them, 110–180 cm for boys and 120–180 cm for girls. A different cohort and scanner from Xu; the two size measures are not interchangeable.',url:physiologyReference.height.tables.male},
+  {tag:'MUSCLE · CHILDREN · 2021–2022',title:'Krupickova et al. wall thickness and Voges et al. strain (SCMR 2025 Tables 48–49, 104)',text:'Mid-ventricular diastolic wall thickness by BSA (0.8–2.2 m², by sex) and LV global longitudinal strain by height (both sexes combined). Strain is the published measure of how much the muscle shortens; it is not a direct measure of muscle strength.',url:physiologyReference.strain.table},
   {tag:'RECENT EVIDENCE REVIEWED · OCT 6, 2026',title:'Li et al. — Biventricular structural and functional references',text:'A newer single-centre study includes ages 0.25–18. The early article version reports age-group means and reference curves. Its dimensional table is not used here: means are not medians, and the youngest subgroup contains few participants. It does not validate infant simulation.',url:'https://doi.org/10.1186/s12887-026-07718-1'},
   {tag:'ADULT NUMERICAL FOUNDATION · 2025',title:'SCMR reference values — 2025 update, Table 3',text:'Adult men: pooled mean LVEDV 143 ± 31 mL, published lower–upper reference limits 81–204 mL, n = 4867. Papillary muscles and trabeculations are included in cavity volume. These are means, not pediatric medians. Adult mode explores volume within these limits; it does not infer volume from age or BSA.',url:adultReference.table},
   {tag:'NEWBORN EVIDENCE · 2023',title:'Vøgg et al. — Copenhagen Baby Heart Study',text:'Published newborn echocardiographic references exist. Their population and imaging method differ from this MRI reference; they are not substituted into the current slider. A separately specified neonatal model would require its own validated geometry and parameters.',url:'https://pubmed.ncbi.nlm.nih.gov/37257953/'}
@@ -25,7 +28,7 @@ for(const id of ['open-evidence','inspect-source','open-method']) $(id).onclick=
 $('close-evidence').onclick=()=>$('evidence').close();
 $('evidence').addEventListener('click',e=>{if(e.target===$('evidence')){const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close();}});
 $('download-data').onclick=()=>{
-  const payload={reference:population==='adult-men'?adultReference:reference,population,current_setting:current,illustrative_cycle:{phase:motionPhase,stage:cycleStage(motionPhase),playing:motionPlaying,speed:motionRate(),note:'Illustrative deformation only. LVEDV is the selected published reference and is not a measurement of the animated mesh.'},sample_ecg:{...ecgModel.params,qt:Math.round(ecgModel.params.qt),lead:'II',paper:'25 mm/s, 10 mm/mV',reference:population==='adult-men'?ecgReference.adultMen:ecgReference.pediatric,illustrative_values:ecgReference.illustrative,note:'Illustrative waveform from published median intervals and axes. Not computed from the 3D mesh, not a patient ECG, not diagnostic. Heart size does not change the ECG.'},reviewed_sources:sources,geometry:'Licensed anatomical illustration by marxtrax (CC BY 4.0). Whole illustration uniformly scales with cube root of published LVEDV ratio. The mesh cavity is not calibrated to the numerical volume; morphology is not validated pediatric anatomy. No age, infant, ECG, disease or transfer prediction.'};
+  const payload={reference:population==='adult-men'?adultReference:sizeBy==='height'?physiologyReference.height:reference,population,size_measure:population==='adult-men'?'lv-volume':sizeBy,current_setting:current,heart_function:{values:physiology,references:physiologyReference,note:'Published centiles or means at the selected row; nothing is interpolated or derived except the adult LVM ÷ LVEDV ratio of means. Strain is a deformation index, not a direct measure of muscle strength. Separate cohorts are not a growth curve.'},illustrative_cycle:{phase:motionPhase,stage:cycleStage(motionPhase),playing:motionPlaying,speed:motionRate(),note:'Illustrative deformation only. LVEDV is the selected published reference and is not a measurement of the animated mesh.'},sample_ecg:{...ecgModel.params,qt:Math.round(ecgModel.params.qt),lead:'II',paper:'25 mm/s, 10 mm/mV',reference:population==='adult-men'?ecgReference.adultMen:ecgReference.pediatric,illustrative_values:ecgReference.illustrative,note:'Illustrative waveform from published median intervals and axes. Not computed from the 3D mesh, not a patient ECG, not diagnostic. Heart size does not change the ECG.'},reviewed_sources:sources,geometry:'Licensed anatomical illustration by marxtrax (CC BY 4.0). Whole illustration uniformly scales with cube root of published LVEDV ratio. The mesh cavity is not calibrated to the numerical volume; morphology is not validated pediatric anatomy. No age, infant, ECG, disease or transfer prediction.'};
   const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));
   const a=document.createElement('a');a.href=url;a.download='heartverse-reference.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 };
@@ -39,6 +42,7 @@ const motionRate=()=>Number($('motion-rate').value);
 // Sample ECG state. The age group is remembered per population; beatCount
 // keeps the scrolling strip continuous across cycles.
 const ecgBandFor={children:defaultBand('children'),'adult-men':defaultBand('adult-men')};
+let physiology;
 let ecgModel,ecgLoop,ecgTrace,ecgMarker,beatCount=0;
 const LOOP_SCALE=38; // scene units per mV
 const baseVolume=72.2;
@@ -48,8 +52,7 @@ const appearanceUniforms={tissueOpacity:{value:.25},vesselEmphasis:{value:1},sur
 
 function configurePopulation(){
   const adult=population==='adult-men';
-  $('size').min=adult?81:.6;$('size').max=adult?204:1.9;$('size').step=adult?1:.1;$('size').value=adult?143:1;
-  $('child-sex').hidden=adult;
+  $('child-sex').hidden=$('size-by-group').hidden=adult;
   $('study-title').textContent=adult?'SCMR · 2025 MRI':'Xu et al. · 2025 MRI';
   $('study-population').textContent=adult?'Adult men · pooled references':'Healthy children · ages 4–18';
   $('reference-note').textContent=adult?'4,867 men · Mean 143 ± 31 mL. Separate adult reference; not a childhood growth curve.':'191 healthy children · Chinese cohort. Reference values are population-specific.';
@@ -66,8 +69,35 @@ function configurePopulation(){
   $('citation-title').textContent=adult?'SCMR, 2025':'Xu et al., 2025';
   $('citation-meta').textContent=adult?'4,867 men · cardiac MRI · Table 3 · Mean ± SD and reference limits':'191 children · 3T cardiac MRI · Table 4 · BSA reference centiles';
   $('method-description').textContent=(adult?'The adult slider selects an illustrative LV cavity volume between the published lower and upper reference limits (81–204 mL). Its baseline is the pooled mean of 143 mL (SD 31 mL), not a median. Intermediate slider positions are not additional published means or centiles. No age-to-volume or BSA-to-volume relationship is inferred. ':'The child slider selects exact 0.1 m² rows from Xu’s Table 4, without interpolation or extrapolation. The 5th–95th centiles describe a reference distribution, not a confidence interval or individual prediction. ')+ 'The textured anatomical illustration is not a calibrated scan; its cavity volume is not measured here. All linear dimensions scale by the cube root of the volume ratio. Uniform whole-heart scaling is a visual assumption, not a finding of either source. The two populations are separate reference modes, not a validated growth or transfer model.';
+  configureSize(true);
   configureECG();
   update();
+}
+// Slider range and labels for the active size measure. Height rows differ by
+// sex (girls start at 120 cm), so a sex change re-runs this and keeps the
+// current height when it is still a published row.
+function configureSize(resetValue){
+  const adult=population==='adult-men',byHeight=!adult&&sizeBy==='height';
+  const rows=byHeight?physiologyReference.height[sex].height:null,previous=Number($('size').value);
+  $('size').min=adult?81:byHeight?rows[0]:.6;$('size').max=adult?204:byHeight?rows.at(-1):1.9;$('size').step=adult?1:byHeight?10:.1;
+  $('size').value=adult?143:byHeight?(!resetValue&&rows.includes(previous)?previous:physiologyReference.height.baseline):1;
+  document.querySelectorAll('[data-by]').forEach(b=>{b.classList.toggle('active',b.dataset.by===sizeBy);b.setAttribute('aria-pressed',String(b.dataset.by===sizeBy));});
+  if(!byHeight)return;
+  const v=physiologyReference.height,label=sex==='male'?'boys':'girls';
+  $('study-title').textContent='Voges et al. · 2023 MRI';
+  $('study-population').textContent='Referred children with normal CMR · UK & Germany';
+  $('reference-note').textContent='154 children · 1.5T · papillary muscles counted in the cavity volume. A separate cohort from the BSA mode; not interchangeable.';
+  $('reference-badge').textContent='2023 MRI MEDIANS · HEIGHT';
+  $('size-label').textContent='Body height';
+  $('range-min').textContent=`${rows[0]} cm`;$('range-max').textContent=`${rows.at(-1)} cm`;
+  $('baseline').textContent=`Baseline · ${v.baseline}`;
+  $('slider-help').textContent=`Each 10 cm step selects a published median for ${label}. Height is a measure of body size, not age.`;
+  $('ghost-label').textContent=$('bar-baseline').textContent=`${v.baseline} cm baseline`;
+  $('reference-stat').textContent=`Same sex · height ${v.baseline} cm`;
+  $('difference-caption').textContent=`From ${v.baseline} cm baseline`;
+  $('citation-title').textContent='Voges et al., 2023';
+  $('citation-meta').textContent='154 children · 1.5T cardiac MRI · SCMR 2025 Tables 24 & 26 · height centiles';
+  $('method-description').textContent='Height mode selects exact 10 cm rows of Voges et al. (2023), reproduced in SCMR 2025 Tables 24 and 26, without interpolation. The 5th–95th centiles describe a reference distribution, not an individual prediction. This cohort (clinically referred children with normal CMR, 1.5T) differs from Xu’s volunteers (3T), so height and BSA modes are not interchangeable. The textured anatomical illustration is not a calibrated scan. All linear dimensions scale by the cube root of the volume ratio; uniform scaling is a visual assumption.';
 }
 function configureECG(){
   const bands=ecgBands(population);
@@ -81,7 +111,7 @@ function configureECG(){
   if(ecgLoop)rebuildLoop();
   drawECG();
 }
-$('ecg-age').onchange=()=>{ecgBandFor[population]=Number($('ecg-age').value);configureECG();};
+$('ecg-age').onchange=()=>{ecgBandFor[population]=Number($('ecg-age').value);configureECG();updatePhysiology();};
 $('ecg-loop').onclick=()=>{const on=$('ecg-loop').getAttribute('aria-pressed')!=='true';$('ecg-loop').setAttribute('aria-pressed',String(on));if(ecgLoop)ecgLoop.visible=on;};
 // Lead II on standard paper: 25 mm/s and 10 mm/mV, so 1 mV spans the width of 0.4 s.
 function drawECG(){
@@ -127,10 +157,12 @@ function createLoop(){
 }
 function update(){
   const adult=population==='adult-men', value=Number($('size').value);
-  current=adult?lookupAdult(value):lookup(value,sex);
-  $('size-value').innerHTML=adult?`${value}<span>mL</span>`:`${current.bsa.toFixed(1)}<span>m²</span>`;
+  const byHeight=!adult&&sizeBy==='height';
+  current=adult?lookupAdult(value):byHeight?lookupHeight(value,sex):lookup(value,sex);
+  const sizeText=byHeight?`${value} cm`:adult?'':`${current.bsa.toFixed(1)} m²`;
+  $('size-value').innerHTML=adult?`${value}<span>mL</span>`:byHeight?`${value}<span>cm</span>`:`${current.bsa.toFixed(1)}<span>m²</span>`;
   $('size').style.setProperty('--fill',`${(value-Number($('size').min))/(Number($('size').max)-Number($('size').min))*100}%`);
-  $('size').setAttribute('aria-valuetext',adult?`${value} millilitres; ${current.statistic}`:`${current.bsa.toFixed(1)} square metres; median LV volume ${current.volume.toFixed(1)} millilitres`);
+  $('size').setAttribute('aria-valuetext',adult?`${value} millilitres; ${current.statistic}`:`${byHeight?`${value} centimetres`:`${current.bsa.toFixed(1)} square metres`}; median LV volume ${current.volume.toFixed(1)} millilitres`);
   $('diameter').textContent=current.volume.toFixed(1);
   const lower=adult?current.lower:current.p5, upper=adult?current.upper:current.p95;
   $('track-low').textContent=`${lower.toFixed(1)} mL`;$('track-high').textContent=`${upper.toFixed(1)} mL`;
@@ -143,22 +175,82 @@ function update(){
   $('scale-factor').textContent=`${current.scale.toFixed(2)}×`;
   $('scale-bar').style.width=`${current.scale/1.5*100}%`;
   $('dimension-label').textContent=`${adult?(value===143?'Mean':'Selected'):'Median'} · ${current.volume.toFixed(1)} mL`;
-  $('metric-context').textContent=adult?(value===143?'Pooled mean · adult men · SD 31 mL':'Selected volume · adult men · exploratory'):`50th percentile · ${sex==='female'?'girls':'boys'} · ${current.bsa.toFixed(1)} m²`;
+  $('metric-context').textContent=adult?(value===143?'Pooled mean · adult men · SD 31 mL':'Selected volume · adult men · exploratory'):`50th percentile · ${sex==='female'?'girls':'boys'} · ${sizeText}`;
   $('takeaway').textContent='Volume changes in three dimensions. The illustration’s linear size follows the cube root of the volume ratio.';
   targetScale=Math.cbrt(current.volume/baseVolume);
   // animate() eases toward targetScale; snap when motion is reduced or before
   // the scene exists so the heart never shows a stale size.
   if(reducedMotion.matches||!heart)displayScale=targetScale;
   if(heart)heart.scale.setScalar(displayScale);if(ghost)ghost.scale.setScalar(Math.cbrt(current.baseline/baseVolume));
+  updatePhysiology();
+}
+// Heart-function panel: published values at the selected size row, with the
+// sex-matched adult mean for comparison (SCMR Table 3; women for girls).
+const range=(c,d=1)=>`${c.p50.toFixed(d)} <small>${c.p5.toFixed(d)}–${c.p95.toFixed(d)}</small>`;
+const meanSD=(m,unit='')=>`${m[0]}${unit} <small>± ${m[1]}${unit}</small>`;
+function updatePhysiology(){
+  const adult=population==='adult-men';
+  physiology=physiologyAt(population,sex,adult?{}:sizeBy==='height'?{height:current.height}:{bsa:current.bsa});
+  const ph=physiology,ecg=ecgModel?.params,d=ph.source==='height'?0:1;
+  const peer=physiologyReference.adult[sex==='male'||adult?'male':'female'],peerLabel=sex==='male'||adult?'men':'women';
+  if(adult){
+    $('fn-pump-source').textContent='SCMR 2025 Table 3 · mean ± SD';
+    $('fn-sv').innerHTML=meanSD(ph.lvsv,' mL');$('fn-sv-note').textContent=`Blood ejected per beat · limits ${ph.lvsv[2]}–${ph.lvsv[3]} mL`;
+    $('fn-esv').innerHTML=meanSD(ph.lvesv,' mL');$('fn-esv-note').textContent=`Left after contraction · limits ${ph.lvesv[2]}–${ph.lvesv[3]} mL`;
+    $('fn-ef').innerHTML=meanSD(ph.lvef,'%');$('fn-ef-note').textContent=`Published · limits ${ph.lvef[2]}–${ph.lvef[3]}%`;
+    $('fn-adult-label').firstChild.textContent='Cardiac output';$('fn-adult').innerHTML=`${ph.co[0]} <small>± ${ph.co[1]} L/min</small>`;$('fn-adult-note').textContent=`Published · limits ${ph.co[2]}–${ph.co[3]} L/min`;
+    $('fn-muscle-source').textContent='SCMR 2025 Table 3';
+    $('fn-mass').innerHTML=meanSD(ph.lvm,' g');$('fn-mass-note').textContent=`Papillary muscles in cavity · limits ${ph.lvm[2]}–${ph.lvm[3]} g`;
+    $('fn-muscle-label').firstChild.textContent='Mass per volume';$('fn-muscle').innerHTML=`${(ph.lvm[0]/ph.lvedv[0]).toFixed(2)} <small>g/mL</small>`;$('fn-muscle-note').textContent='Ratio of the published means';
+  }else{
+    const src=ph.source==='height'?'Voges 2023':'Xu 2025',sexLabel=sex==='male'?'boys':'girls';
+    $('fn-pump-source').textContent=`${src} · median, 5th–95th`;
+    $('fn-sv').innerHTML=range(ph.lvsv,d)+' <small>mL</small>';$('fn-sv-note').textContent='Blood ejected per beat';
+    $('fn-esv').innerHTML=range(ph.lvesv,d)+' <small>mL</small>';$('fn-esv-note').textContent='Left after contraction';
+    if(ph.lvef){$('fn-ef').innerHTML=`${ph.lvef.mean}% <small>± ${ph.lvef.sd}</small>`;$('fn-ef-note').textContent=`Xu Table 2 · all ${sexLabel} · not by BSA`;}
+    else{$('fn-ef').innerHTML='—';$('fn-ef-note').textContent='Not tabulated by height in SCMR 2025';}
+    $('fn-adult-label').firstChild.textContent='Pump per beat vs adults';$('fn-adult').innerHTML=`${Math.round(ph.lvsv.p50/peer.lvsv[0]*100)}% <small>of ${peer.lvsv[0]} mL</small>`;$('fn-adult-note').textContent=`Median SV vs adult ${peerLabel}’s mean (SCMR) · other cohort`;
+    $('fn-mass').innerHTML=range(ph.lvm,d)+' <small>g</small>';
+    $('fn-mass-note').textContent=ph.source==='height'?'Excludes papillary muscles · SCMR Table 28':'Xu Table 7 · same BSA row';
+    if(ph.source==='height'){
+      $('fn-muscle-source').textContent='Mass: Voges 2023 · strain: Voges 2022';
+      $('fn-muscle-label').firstChild.textContent='Longitudinal strain';
+      const neg=x=>`−${Math.abs(x).toFixed(1)}`;
+      $('fn-muscle').innerHTML=ph.gls?`${neg(ph.gls.p50)}% <small>${neg(ph.gls.p5)} to ${neg(ph.gls.p95)}</small>`:'—';
+      $('fn-muscle-note').textContent='Muscle shortening per beat · both sexes · SCMR Table 104';
+    }else{
+      $('fn-muscle-source').textContent='Mass: Xu 2025 · wall: Krupickova 2021';
+      $('fn-muscle-label').firstChild.textContent='Wall thickness';
+      $('fn-muscle').innerHTML=ph.thickness?range(ph.thickness,1)+' <small>mm</small>':'—';
+      $('fn-muscle-note').textContent=ph.thickness?`Mid-ventricular, diastole · SCMR Table ${sex==='male'?48:49}`:'Not reported below 0.8 m²';
+    }
+  }
+  if(ecg){
+    $('fn-pulse-source').textContent=`${ecg.study} · median, 2nd–98th`;
+    $('fn-hr').innerHTML=`${ecg.hr.median} <small>${ecg.hr.low}–${ecg.hr.high} bpm</small>`;
+    $('fn-hr-note').textContent=`Resting ECG · ECG age ${ecg.bandLabel} · sets the 4D beat`;
+  }
+  const mri=physiologyReference.bsa.mriHeartRate[sex];
+  if(adult){
+    $('fn-extra-label').firstChild.textContent='QRS · QTc';$('fn-extra').innerHTML=ecg?`${ecg.qrsDur.median} <small>·</small> ${ecg.qtc.median} <small>ms</small>`:'';
+    $('fn-extra-note').textContent='Sample ECG medians for the ECG age group';
+  }else{
+    $('fn-extra-label').firstChild.textContent='Heart rate during MRI';$('fn-extra').innerHTML=`${mri.median} <small>${mri.iqr[0]}–${mri.iqr[1]} bpm</small>`;
+    $('fn-extra-note').textContent=`Xu Table 1 · all ${sex==='male'?'boys':'girls'} · median, IQR`;
+  }
+  $('fn-foot').textContent=adult?'Pooled adult means; not a growth curve.':'Each value is a separate published centile at this row, so SV + ESV need not equal EDV exactly. Strain is how much the muscle shortens (more negative = more shortening), not a direct measure of strength. Size, pump and muscle values do not change the sample ECG.';
+  $('pump-line').textContent=adult?`Pumps ${ph.lvsv[0]} mL per beat · mean ESV ${ph.lvesv[0]} mL`:`Pumps ${ph.lvsv.p50.toFixed(d)} mL per beat · ESV ${ph.lvesv.p50.toFixed(d)} mL`;
 }
 $('population').onchange=()=>{population=$('population').value;configurePopulation();};
 $('size').addEventListener('input',update);
 document.querySelectorAll('[data-sex]').forEach(button=>button.onclick=()=>{
   sex=button.dataset.sex;
   document.querySelectorAll('[data-sex]').forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button));});
+  if(sizeBy==='height'&&population==='children')configureSize(false);
   configureECG();update();
 });
-$('baseline').onclick=()=>{$('size').value=population==='adult-men'?143:1;update();};
+document.querySelectorAll('[data-by]').forEach(button=>button.onclick=()=>{if(sizeBy===button.dataset.by)return;sizeBy=button.dataset.by;configurePopulation();});
+$('baseline').onclick=()=>{$('size').value=population==='adult-men'?143:sizeBy==='height'?physiologyReference.height.baseline:1;update();};
 // Cycle timing follows the measured Time2Track ground-truth size profile; the
 // deformation size is illustrative and independent of the LVEDV reference.
 function cycleStage(phase){return phase<CYCLE.contractionStart||phase===1?'Full · diastole':phase<CYCLE.contractedStart?'Contraction':phase<CYCLE.relaxationStart?'Contracted':'Relaxation & filling';}
@@ -350,7 +442,7 @@ $('snapshot').onclick=()=>{
   const unit=out.width/900;ctx.fillStyle='#edeee7';ctx.font=`${22*unit}px sans-serif`;ctx.fillText('Heartverse · Anatomy studio',28*unit,40*unit);
   ctx.font=`${14*unit}px sans-serif`;ctx.fillStyle='#ddc69f';ctx.fillText(`${$('dimension-label').textContent} | ${population==='adult-men'?'Adult men':sex==='female'?'Girls':'Boys'} | ${$('view-mode').textContent} | ${$('surface-badge').textContent}`,28*unit,66*unit);
   ctx.fillStyle='#afbdba';ctx.font=`${11*unit}px sans-serif`;ctx.fillText(`Illustrative 4D motion · Phase ${Math.round(motionPhase*100)}% · LVEDV is the reference value · Sample ECG loop: ${ecgModel.params.bandLabel}, ${ecgModel.params.study} medians, illustrative shape`,28*unit,out.height-40*unit);
-  ctx.font=`${9*unit}px sans-serif`;ctx.fillText('Model: marxtrax · CC BY 4.0 · Reference: '+(population==='adult-men'?'SCMR 2025, Table 3':'Xu 2025, Table 4'),28*unit,out.height-21*unit);
+  ctx.font=`${9*unit}px sans-serif`;ctx.fillText('Model: marxtrax · CC BY 4.0 · Reference: '+(population==='adult-men'?'SCMR 2025, Table 3':sizeBy==='height'?'Voges 2023 via SCMR 2025, Tables 24/26':'Xu 2025, Table 4'),28*unit,out.height-21*unit);
   const a=document.createElement('a');a.download='heartverse-anatomy-view.png';a.href=out.toDataURL('image/png');a.click();$('viewer-status').textContent='Saved PNG with reference and model attribution';
 };
 $('rotate').onclick=()=>{if(!controls)return;controls.autoRotate=!controls.autoRotate;$('rotate').classList.toggle('active',controls.autoRotate);$('rotate').setAttribute('aria-pressed',String(controls.autoRotate));};
@@ -360,7 +452,7 @@ $('reset-all').onclick=()=>{
   motionPlaying=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;$('motion-rate').value='1';beatCount=0;setMotion(0);updateMotionButton();
   for(const key in ecgBandFor)ecgBandFor[key]=defaultBand(key);$('ecg-loop').setAttribute('aria-pressed','true');if(ecgLoop)ecgLoop.visible=true;
   sex='female';document.querySelectorAll('[data-sex]').forEach(b=>{b.classList.toggle('active',b.dataset.sex===sex);b.setAttribute('aria-pressed',String(b.dataset.sex===sex));});
-  population='children';$('population').value=population;configurePopulation();
+  population='children';sizeBy='bsa';$('population').value=population;configurePopulation();
   viewPreset='exterior';$('vessel-emphasis').value=100;$('surface-detail').value=85;selectSurface('transparent');$('exposure').value=100;$('exposure').oninput();
   $('size').value=1;$('ghost').checked=false;$('cutaway').checked=false;$('dimensions').checked=true;
   if(controls){controls.autoRotate=false;$('rotate').classList.remove('active');$('rotate').setAttribute('aria-pressed','false');resetCamera();if(ghost)ghost.visible=false;reveal();$('dimensions').onchange();}update();
@@ -381,13 +473,14 @@ function animate(time=0){
 // stays free for #research. Incoming values are validated and snapped to
 // the slider's published steps.
 function shareURL(){
-  const params=new URLSearchParams({p:population,s:sex,v:$('size').value,view:viewPreset,look:$('surface').value,ecg:ecgBandFor[population]});
+  const params=new URLSearchParams({p:population,s:sex,by:sizeBy,v:$('size').value,view:viewPreset,look:$('surface').value,ecg:ecgBandFor[population]});
   return `${location.origin}${location.pathname}?${params}`;
 }
 function applySharedView(){
   const q=new URLSearchParams(location.search);
   if(['children','adult-men'].includes(q.get('p'))){population=q.get('p');$('population').value=population;}
   if(['female','male'].includes(q.get('s'))){sex=q.get('s');document.querySelectorAll('[data-sex]').forEach(b=>{b.classList.toggle('active',b.dataset.sex===sex);b.setAttribute('aria-pressed',String(b.dataset.sex===sex));});}
+  if(['bsa','height'].includes(q.get('by')))sizeBy=q.get('by');
   if(['cutaway','exterior','side','superior'].includes(q.get('view')))viewPreset=q.get('view');
   if([...$('surface').options].some(o=>o.value===q.get('look')))selectSurface(q.get('look'));
   const band=Number(q.get('ecg'));
@@ -397,7 +490,7 @@ function applySharedView(){
   if(q.has('v')&&Number.isFinite(v)){
     const min=Number($('size').min),max=Number($('size').max),step=Number($('size').step);
     const snapped=Math.min(max,Math.max(min,min+Math.round((v-min)/step)*step));
-    $('size').value=population==='children'?snapped.toFixed(1):snapped;update();
+    $('size').value=population==='children'&&sizeBy==='bsa'?snapped.toFixed(1):snapped;update();
   }
 }
 $('share-link').onclick=async()=>{

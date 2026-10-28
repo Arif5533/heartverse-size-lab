@@ -1,4 +1,4 @@
-import { ecgReference } from './reference.js?v=2';
+import { ecgReference } from './reference.js?v=3';
 import { CYCLE } from './cycle-profile.js?v=1';
 
 // Illustrative sample ECG and vectorcardiogram (the "3D ECG" loop).
