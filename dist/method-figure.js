@@ -37,6 +37,29 @@ figureDialog.addEventListener('click',event=>{
   const b=figureDialog.getBoundingClientRect();
   if(event.clientX<b.left||event.clientX>b.right||event.clientY<b.top||event.clientY>b.bottom)figureDialog.close();
 });
+// Jump menu for the long research panel. It sits in the sticky header and
+// highlights the section currently in view.
+const researchDialog=$('evidence');
+const researchSections=[['Main idea','.research-overview'],['Figure 1','#method-figure-title'],['Preparation','#preparation-title'],['Transferability','#transferability-title'],['Figure 2','#age-transfer-title'],['Results','#results-title'],['Figure 3','#results-figure-title'],['Figure 4','#ecg-examples-title'],['Next steps','#next-steps-title'],['References','.research-references-heading']]
+  .map(([label,selector])=>{const el=researchDialog.querySelector(selector);return el&&{label,target:el.closest('section')||el};}).filter(Boolean);
+const researchNav=document.createElement('nav');researchNav.className='research-nav';researchNav.setAttribute('aria-label','Research sections');
+researchNav.innerHTML=researchSections.map(({label},i)=>`<button type="button" data-section="${i}">${label}</button>`).join('');
+researchDialog.querySelector('.dialog-header').append(researchNav);
+researchNav.addEventListener('click',event=>{
+  const button=event.target.closest('[data-section]');if(!button)return;
+  // Offset by the sticky header so the section title is not hidden under it.
+  const target=researchSections[button.dataset.section].target,header=researchDialog.querySelector('.dialog-header');
+  researchDialog.scrollTo({top:researchDialog.scrollTop+target.getBoundingClientRect().top-header.getBoundingClientRect().bottom-16,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+});
+function markResearchSection(){
+  const line=researchDialog.querySelector('.dialog-header').getBoundingClientRect().bottom+24;
+  let active=0;researchSections.forEach(({target},i)=>{if(target.getBoundingClientRect().top<=line)active=i;});
+  researchNav.querySelectorAll('button').forEach((b,i)=>{const on=i===active;b.classList.toggle('active',on);if(on)b.setAttribute('aria-current','true');else b.removeAttribute('aria-current');});
+  const chip=researchNav.querySelector('.active');
+  if(chip&&(chip.offsetLeft<researchNav.scrollLeft||chip.offsetLeft+chip.offsetWidth>researchNav.scrollLeft+researchNav.clientWidth))researchNav.scrollLeft=chip.offsetLeft-16;
+}
+researchDialog.addEventListener('scroll',markResearchSection,{passive:true});
+researchDialog.addEventListener('toggle',markResearchSection);
 // Shareable entry point to the requested research section.
 function openResearchFromHash(){if(location.hash==='#research'&&!$('evidence').open)$('evidence').showModal();}
 window.addEventListener('hashchange',openResearchFromHash);

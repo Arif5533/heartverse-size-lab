@@ -29,7 +29,8 @@ $('download-data').onclick=()=>{
 const wrap=$('canvas-wrap');
 let renderer,scene,camera,controls,heart,ghost,anatomy,lineGroup,motionRoot,anatomyPoints;
 let targetScale=1,displayScale=1;
-let motionPhase=0,motionPlaying=!window.matchMedia('(prefers-reduced-motion: reduce)').matches,lastFrame=0;
+const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+let motionPhase=0,motionPlaying=!reducedMotion.matches,lastFrame=0;
 const motionRate=()=>Number($('motion-rate').value);
 const baseVolume=72.2;
 let viewPreset='exterior';
@@ -79,7 +80,9 @@ function update(){
   $('metric-context').textContent=adult?(value===143?'Pooled mean · adult men · SD 31 mL':'Selected volume · adult men · exploratory'):`50th percentile · ${sex==='female'?'girls':'boys'} · ${current.bsa.toFixed(1)} m²`;
   $('takeaway').textContent='Volume changes in three dimensions. The illustration’s linear size follows the cube root of the volume ratio.';
   targetScale=Math.cbrt(current.volume/baseVolume);
-  displayScale=targetScale;
+  // animate() eases toward targetScale; snap when motion is reduced or before
+  // the scene exists so the heart never shows a stale size.
+  if(reducedMotion.matches||!heart)displayScale=targetScale;
   if(heart)heart.scale.setScalar(displayScale);if(ghost)ghost.scale.setScalar(Math.cbrt(current.baseline/baseVolume));
 }
 $('population').onchange=()=>{population=$('population').value;configurePopulation();};
@@ -129,7 +132,10 @@ async function createScene(){
   scene.add(new THREE.HemisphereLight(0xd4e4e9,0x15131c,.85));
   for(const [color,pos,intensity] of [[0xffe3d1,[-120,160,170],2.8],[0x8ecfe5,[110,50,-100],3.5],[0xe5d7e2,[110,-30,180],.8]]){const light=new THREE.DirectionalLight(color,intensity);light.position.set(...pos);scene.add(light);}
   heart=new THREE.Group();scene.add(heart);
-  const gltf=await new GLTFLoader().loadAsync('./models/anatomical-heart/scene.gltf');
+  // Progress counts files (glTF, geometry, three textures), not bytes.
+  const manager=new THREE.LoadingManager();
+  manager.onProgress=(url,loaded,total)=>{const pct=Math.round(loaded/total*100);$('loading-fill').style.width=`${pct}%`;$('loading-pct').textContent=`${pct}%`;};
+  const gltf=await new GLTFLoader(manager).loadAsync('./models/anatomical-heart/scene.gltf');
   const source=gltf.scene;source.updateMatrixWorld(true);
   const box=new THREE.Box3().setFromObject(source),center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
   source.position.sub(center);
@@ -149,7 +155,7 @@ async function createScene(){
     const vertex=new THREE.Vector3();
     for(let i=0;i<positions.count;i++){object.getVertexPosition(i,vertex);object.localToWorld(vertex);positions.setXYZ(i,vertex.x,vertex.y,vertex.z);}
     geometry.deleteAttribute('skinIndex');geometry.deleteAttribute('skinWeight');geometry.computeVertexNormals();
-    const mesh=new THREE.Mesh(geometry,new THREE.MeshBasicMaterial({color:'#c7beab',wireframe:true,transparent:true,opacity:.08,depthTest:false,depthWrite:false}));mesh.renderOrder=3;ghost.add(mesh);
+    const mesh=new THREE.Mesh(geometry,new THREE.MeshBasicMaterial({color:'#f2c98a',wireframe:true,transparent:true,opacity:.06,depthTest:false,depthWrite:false}));mesh.renderOrder=3;ghost.add(mesh);
   });
   // Sample the posed source surface once. Dots retain the exact model geometry.
   const dotPositions=[],dotColors=[],seen=new Set(),dotVertex=new THREE.Vector3();
@@ -176,7 +182,7 @@ async function createScene(){
   const ring=new THREE.Mesh(new THREE.RingGeometry(58,58.3,100),new THREE.MeshBasicMaterial({color:0x66705e,transparent:true,opacity:.22,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.position.y=-82.8;scene.add(ring);
   lineGroup=new THREE.Group();const points=[new THREE.Vector3(23,-20,18),new THREE.Vector3(47,-24,20),new THREE.Vector3(57,-24,20)];
   lineGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points),new THREE.LineBasicMaterial({color:'#dbc59e',transparent:true,opacity:.45})));motionRoot.add(lineGroup);
-  new ResizeObserver(resize).observe(wrap);resize();$('loading').remove();update();reveal();applySurface();setMotion(motionPhase);animate();
+  new ResizeObserver(resize).observe(wrap);resize();$('loading').remove();update();selectView(viewPreset);applySurface();setMotion(motionPhase);animate();
 }
 function resize(){if(!renderer)return;const w=wrap.clientWidth,h=wrap.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.fov=24;camera.updateProjectionMatrix();}
 function resetCamera(){camera.position.set(35,18,450);controls.target.set(0,0,0);controls.update();}
@@ -256,6 +262,7 @@ $('focus-view').onclick=()=>{const on=document.body.classList.toggle('focus-mode
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('focus-mode'))$('focus-view').click();});
 $('snapshot').onclick=()=>{
   if(!renderer||!anatomy){$('viewer-status').textContent='Please wait for the anatomy to load.';return;}
+  displayScale=targetScale;heart.scale.setScalar(displayScale);
   renderer.render(scene,camera);
   const out=document.createElement('canvas');out.width=renderer.domElement.width;out.height=renderer.domElement.height;
   const ctx=out.getContext('2d');ctx.fillStyle='#10191e';ctx.fillRect(0,0,out.width,out.height);ctx.drawImage(renderer.domElement,0,0);
@@ -280,10 +287,39 @@ function animate(time=0){
   requestAnimationFrame(animate);
   const delta=lastFrame?Math.min((time-lastFrame)/1000,.05):0;lastFrame=time;
   if(motionPlaying&&!document.hidden)setMotion((motionPhase+delta*.8*motionRate())%1);
+  if(displayScale!==targetScale){
+    displayScale=Math.abs(targetScale-displayScale)<1e-4?targetScale:displayScale+(targetScale-displayScale)*(1-Math.exp(-delta*9));
+    heart.scale.setScalar(displayScale);
+  }
   controls.update();
   renderer.render(scene,camera);
 }
-configurePopulation();
+// "Copy link" encodes the current exploration in the query string; the hash
+// stays free for #research. Incoming values are validated and snapped to
+// the slider's published steps.
+function shareURL(){
+  const params=new URLSearchParams({p:population,s:sex,v:$('size').value,view:viewPreset,look:$('surface').value});
+  return `${location.origin}${location.pathname}?${params}`;
+}
+function applySharedView(){
+  const q=new URLSearchParams(location.search);
+  if(['children','adult-men'].includes(q.get('p'))){population=q.get('p');$('population').value=population;}
+  if(['female','male'].includes(q.get('s'))){sex=q.get('s');document.querySelectorAll('[data-sex]').forEach(b=>{b.classList.toggle('active',b.dataset.sex===sex);b.setAttribute('aria-pressed',String(b.dataset.sex===sex));});}
+  if(['cutaway','exterior','side','superior'].includes(q.get('view')))viewPreset=q.get('view');
+  if([...$('surface').options].some(o=>o.value===q.get('look')))selectSurface(q.get('look'));
+  configurePopulation();
+  const v=Number(q.get('v'));
+  if(q.has('v')&&Number.isFinite(v)){
+    const min=Number($('size').min),max=Number($('size').max),step=Number($('size').step);
+    const snapped=Math.min(max,Math.max(min,min+Math.round((v-min)/step)*step));
+    $('size').value=population==='children'?snapped.toFixed(1):snapped;update();
+  }
+}
+$('share-link').onclick=async()=>{
+  try{await navigator.clipboard.writeText(shareURL());$('viewer-status').textContent='Link copied · it opens this exact view';}
+  catch{prompt('Copy this link to share the current view:',shareURL());}
+};
+applySharedView();
 createScene().catch(error=>{
   console.error(error);$('loading').innerHTML='<div class="fallback"><strong>The 3D model could not load.</strong><p>The published measurements and sources still work. Check your connection and WebGL support, then reload.</p></div>';
   $('volume-card').hidden=true;$('lv-label').hidden=true;
