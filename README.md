@@ -10,7 +10,7 @@ An interactive anatomy studio for exploring published heart-size references, tra
 - Transparent, dot, mesh, and color-detail anatomy, with orbit, zoom, view presets, and image export.
 - An illustrative cardiac cycle with play/pause, phase, and speed controls. At 1× it beats at the median heart rate of the selected ECG age group.
 - A sample ECG synchronised with the cycle: a lead II strip on standard paper and a 3D ECG loop (vectorcardiogram) around the heart, with an ECG age control for children aged 1–16 (by sex) and adult men aged 16–89.
-- A separate 49-frame released Time2Track motion comparison.
+- A 49-frame released Time2Track motion comparison, synced by default to the 4D cycle. The heart's contraction timing follows the measured size of the Time2Track ground-truth mesh in each frame, so frame N and the 3D heart show the same moment of the beat.
 - The proposed Heartverse ECG research framework, its complete Figure 1 caption, and the original downloadable PDF.
 - Study preparation, the Figure 2 age-transfer design, and age-group classification results with both comparison tables and the Figure 3 ROC plots.
 
@@ -22,7 +22,7 @@ Pediatric settings use exact published BSA rows from [Xu et al. (2025), Table 4]
 
 The sample ECG uses median heart rate, PR, P and QRS duration, Bazett QTc and frontal axes from [Rijnbeek et al. (2001)](https://doi.org/10.1053/euhj.2000.2399) for children aged 1–16 and [Rijnbeek et al. (2014)](https://doi.org/10.1016/j.jelectrocard.2014.07.022) for adult men. Wave shapes, front–back loop components, T-wave size, adult amplitudes, the pediatric T-wave axis, and the electromechanical delay are illustrative. It is not computed from the 3D mesh, heart size does not change it, and it is not a patient ECG or diagnostic.
 
-Figure 1 describes a **proposed study**, with proposed ages 1–16 subject to available patients and reliable rhythm labels. Its diagrams are schematic, not experimental results. This website does not perform ECG generation, classification, or clinical diagnosis. The Time2Track example is independent of the size controls and does not validate the illustrative animation.
+Figure 1 describes a **proposed study**, with proposed ages 1–16 subject to available patients and reliable rhythm labels. Its diagrams are schematic, not experimental results. This website does not perform ECG generation, classification, or clinical diagnosis. The Time2Track example is independent of the size controls. Its measured size profile sets the 4D cycle timing (frames assumed evenly spaced, projected area as a size proxy); this does not validate the illustrative deformation.
 
 ## Run locally
 
@@ -46,6 +46,8 @@ All application asset paths are relative so the site works at the `/heartverse-s
 - `dist/app.js`, `dist/appearance.js`: anatomy viewer, appearance, and illustrative motion.
 - `dist/reference.js`: published reference values and bounded lookup, including the cited ECG norms.
 - `dist/ecg.js`: sample ECG and 3D loop model.
+- `dist/cycle-profile.js`: shared cycle timing measured from the Time2Track ground-truth frames.
+- `checks/time2track-profile.mjs`: re-measures that profile from the frame atlas (see the file header for the macOS command).
 - `checks/ecg.mjs`: measures every sample ECG and checks it against the cited norms (`node checks/ecg.mjs`).
 - `dist/research-motion.js`: released motion-example player.
 - `dist/method-figure.js`: research figure enlargement and zoom.

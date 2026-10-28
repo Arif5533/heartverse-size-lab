@@ -168,3 +168,10 @@ main{margin:14px 22px;gap:14px;grid-template-columns:238px minmax(350px,1fr) 330
   .ecg-card{left:12px;right:12px;bottom:12px;width:auto}
   body.focus-mode .viewer{min-height:946px}
 }
+
+/* Sync toggle beside the Time2Track label. */
+.research-example-label,#motion-detail .research-example-label{flex-direction:row;justify-content:space-between;align-items:flex-start;gap:10px}
+.research-example-label>div{display:flex;flex-direction:column}
+#research-sync{flex:none;font-size:10px;padding:4px 9px;border:1px solid #bedbc22b;border-radius:999px;color:#9fb3b4}
+#research-sync[aria-pressed="true"]{color:#122027;background:#d8c49f;border-color:#d8c49f}
+#research-rate:disabled{opacity:.45;cursor:not-allowed}

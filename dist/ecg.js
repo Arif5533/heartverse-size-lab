@@ -1,4 +1,5 @@
 import { ecgReference } from './reference.js?v=2';
+import { CYCLE } from './cycle-profile.js?v=1';
 
 // Illustrative sample ECG and vectorcardiogram (the "3D ECG" loop).
 // Heart rate, PR, P and QRS duration, QTc and frontal axes are published
@@ -11,8 +12,8 @@ import { ecgReference } from './reference.js?v=2';
 const rad=d=>d*Math.PI/180;
 const frontal=(deg,z=0)=>[Math.cos(rad(deg)),Math.sin(rad(deg)),z];
 export const LEAD_II=frontal(60);
-// The 4D animation starts contracting at phase 0.12; the QRS begins shortly before.
-export const CONTRACTION_START=0.12, ELECTROMECHANICAL_DELAY=0.03;
+// The QRS begins shortly before the shared cycle profile starts contracting.
+export const CONTRACTION_START=CYCLE.contractionStart, ELECTROMECHANICAL_DELAY=0.03;
 
 export function ecgBands(population){return population==='adult-men'?ecgReference.adultMen.bands:ecgReference.pediatric.bands;}
 export function defaultBand(population){return population==='adult-men'?1:3;}

@@ -1,5 +1,5 @@
 {
-  "title": "Shift-invariant baseline \u00b7 Subject A",
+  "title": "Shift-invariant baseline · Subject A",
   "repository": "https://github.com/Chrisa142857/time2track",
   "commit": "0a9da5232b6902dccf2fcf3db0a50019fe4c8745",
   "source": "example_ecg_gif/ecg_heart_shift_invariant_8L_256d_49frames_subjectA.gif",
@@ -8,8 +8,9 @@
   "width": 768,
   "height": 384,
   "adaptation": "Fixed whitespace crops, downsampling, and WebP frame atlas. All frames retained in order; colors and geometry unaltered.",
-  "timing": "Source GIF does not specify frame durations. Player uses an adjustable 25 fps display rate, not measured physiological timing.",
+  "timing": "Source GIF does not specify frame durations. The repository describes generated sequences as 49 frames of one cardiac cycle; frames are assumed evenly spaced. Unsynced, the player uses an adjustable 25 fps display rate, not measured physiological timing.",
   "license": "MIT",
   "credit": "Ziquan Wei, Tingting Dan, Guorong Wu (2026)",
-  "relationship": "Published baseline comparison from the Time2Track repository. Independent of the Heartverse size reference and illustrative 4D animation. No ECG inference is run in this site."
+  "relationship": "Published baseline comparison from the Time2Track repository, independent of the Heartverse size reference. Its measured size profile sets the timing of the illustrative 4D animation and sample ECG. No ECG inference is run in this site.",
+  "phase_alignment": "Synced by default to the Heartverse 4D cycle: frame N is shown at phase N/49. The 4D cycle timing follows the ground-truth projected-area profile (yellow pixels, circular 5-frame moving average, scaled 0–1) stored in dist/cycle-profile.js and re-measured by checks/time2track-profile.mjs. Contraction starts after frame 3; size stays below 10% of its range from frame 16 to 27. Projected area is a size proxy, not a volume."
 }

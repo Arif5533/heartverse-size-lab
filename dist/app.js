@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from './vendor/GLTFLoader.js';
 import { reference, lookup, adultReference, lookupAdult, ecgReference } from './reference.js?v=2';
-import { ecgBands, defaultBand, ecgParameters, buildECG, LEAD_II } from './ecg.js?v=1';
+import { ecgBands, defaultBand, ecgParameters, buildECG, LEAD_II } from './ecg.js?v=2';
+import { CYCLE, cycleSize } from './cycle-profile.js?v=1';
 import { createContrastMaterial } from './appearance.js';
 
 const $=id=>document.getElementById(id);
@@ -158,8 +159,13 @@ document.querySelectorAll('[data-sex]').forEach(button=>button.onclick=()=>{
   configureECG();update();
 });
 $('baseline').onclick=()=>{$('size').value=population==='adult-men'?143:1;update();};
-// Display timing and deformation are illustrative, independent of the LVEDV reference.
-function cycleStage(phase){return phase<.12||phase===1?'Full · diastole':phase<.42?'Contraction':phase<.52?'Contracted':'Relaxation & filling';}
+// Cycle timing follows the measured Time2Track ground-truth size profile; the
+// deformation size is illustrative and independent of the LVEDV reference.
+function cycleStage(phase){return phase<CYCLE.contractionStart||phase===1?'Full · diastole':phase<CYCLE.contractedStart?'Contraction':phase<CYCLE.relaxationStart?'Contracted':'Relaxation & filling';}
+// The Time2Track panel follows (and can drive) this cycle through window events.
+const announceCycle=()=>window.dispatchEvent(new CustomEvent('heartverse:cycle',{detail:{phase:motionPhase,playing:motionPlaying,bpm:ecgModel?.params.hr.median}}));
+window.addEventListener('heartverse:seek',event=>{motionPlaying=false;updateMotionButton();setMotion(event.detail.phase);});
+window.addEventListener('heartverse:toggle',()=>$('motion-play').click());
 function setMotion(phase){
   motionPhase=THREE.MathUtils.clamp(phase,0,1);
   const stage=cycleStage(motionPhase),percent=Math.round(motionPhase*100);
@@ -168,17 +174,17 @@ function setMotion(phase){
   $('motion-stage').textContent=stage;
   $('motion-phase').style.setProperty('--fill',`${percent}%`);
   if(motionRoot){
-    const smooth=t=>t*t*(3-2*t);
-    const squeeze=phase<.12?0:phase<.42?smooth((phase-.12)/.3):phase<.52?1:1-smooth((phase-.52)/.48);
+    const squeeze=1-cycleSize(motionPhase);
     motionRoot.scale.set(1-.065*squeeze,1-.04*squeeze,1-.065*squeeze);
     motionRoot.position.y=-2.2*squeeze;motionRoot.rotation.z=.012*squeeze;
   }
-  drawECG();updateLoopMarker();
+  drawECG();updateLoopMarker();announceCycle();
 }
 function updateMotionButton(){
   $('motion-play').textContent=motionPlaying?'Ⅱ':'▶';
   $('motion-play').setAttribute('aria-label',motionPlaying?'Pause 4D cycle':'Play 4D cycle');
   $('motion-play').setAttribute('aria-pressed',String(motionPlaying));
+  announceCycle();
 }
 $('motion-play').onclick=()=>{motionPlaying=!motionPlaying;updateMotionButton();};
 $('motion-phase').addEventListener('input',()=>{motionPlaying=false;updateMotionButton();setMotion(Number($('motion-phase').value)/100);});
