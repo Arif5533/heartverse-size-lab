@@ -6,7 +6,8 @@ An interactive anatomy studio for exploring published heart-size references, tra
 
 ## Explore
 
-- Pediatric reference volumes for girls and boys across published body-surface-area settings, plus a separate adult-men reference.
+- Pediatric reference volumes for girls and boys by body surface area (BSA) or by body height, plus a separate adult-men reference.
+- A heart-function panel for the selected setting: pump (stroke volume, end-systolic volume, ejection fraction, stroke volume compared with adults of the same sex), muscle (LV mass, wall thickness or longitudinal strain), and pulse (resting ECG heart rate and heart rate during MRI).
 - Transparent, dot, mesh, and color-detail anatomy, with orbit, zoom, view presets, and image export.
 - An illustrative cardiac cycle with play/pause, phase, and speed controls. At 1× it beats at the median heart rate of the selected ECG age group.
 - A sample ECG synchronised with the cycle: a lead II strip on standard paper and a 3D ECG loop (vectorcardiogram) around the heart, with an ECG age control for children aged 1–16 (by sex) and adult men aged 16–89.
@@ -19,6 +20,21 @@ An interactive anatomy studio for exploring published heart-size references, tra
 The numerical output is left-ventricular end-diastolic cavity volume. The anatomical mesh is an artistic illustration; it is not a segmented pediatric scan or calibrated whole-heart measurement. Uniform visual scaling follows the cube root of the volume ratio. The main 4D motion is simulated for illustration.
 
 Pediatric settings use exact published BSA rows from [Xu et al. (2025), Table 4](https://pmc.ncbi.nlm.nih.gov/articles/PMC12182818/#tbl0020), covering a study population aged 4–18. BSA is not an age estimate. Adult-men values use the separate [SCMR 2025 reference update, Table 3](https://pmc.ncbi.nlm.nih.gov/articles/PMC12159681/#tbl0015). These populations do not form a continuous developmental growth curve.
+
+Height mode uses [Voges et al. (2023)](https://doi.org/10.1002/jmri.28299) as reproduced in [SCMR 2025 Tables 24 and 26](https://pmc.ncbi.nlm.nih.gov/articles/PMC12159681/#tbl0120): exact 10 cm rows, 110–180 cm for boys and 120–180 cm for girls (rows above 180 cm are omitted). That cohort (154 clinically referred children with normal CMR, UK and Germany, 1.5T) differs from Xu's volunteers (3T), so height and BSA modes are not interchangeable.
+
+The heart-function panel shows only published values at the selected row, without interpolation:
+
+| Factor | BSA mode (children) | Height mode (children) | Adult men |
+|---|---|---|---|
+| Pump: stroke and end-systolic volume | [Xu Tables 5–6](https://pmc.ncbi.nlm.nih.gov/articles/PMC12182818/#tbl0030), 5th/50th/95th | SCMR Tables 24/26 (Voges 2023) | [SCMR Table 3](https://pmc.ncbi.nlm.nih.gov/articles/PMC12159681/#tbl0015), mean ± SD |
+| Ejection fraction | Xu Table 2, by sex only | Not tabulated by height | SCMR Table 3 |
+| Stroke volume vs adults | Child median ÷ SCMR Table 3 mean (women for girls, men for boys) | Same | Cardiac output instead (Table 3) |
+| Muscle: LV mass | [Xu Table 7](https://pmc.ncbi.nlm.nih.gov/articles/PMC12182818/#tbl0035) | [SCMR Table 28](https://pmc.ncbi.nlm.nih.gov/articles/PMC12159681/#tbl0140), papillary muscles excluded | SCMR Table 3 |
+| Muscle: wall thickness / strain | Mid-ventricular wall thickness, [SCMR Tables 48–49](https://pmc.ncbi.nlm.nih.gov/articles/PMC12159681/#tbl0240) (Krupickova 2021), from 0.8 m² | LV global longitudinal strain, [SCMR Table 104](https://pmc.ncbi.nlm.nih.gov/articles/PMC12159681/#tbl0520) (Voges 2022), both sexes | LV mass ÷ EDV, ratio of means |
+| Pulse | Rijnbeek ECG heart rate for the ECG age; Xu Table 1 heart rate during MRI | Same | Rijnbeek 2014 heart rate; QRS and QTc |
+
+Strain measures how much the muscle shortens; it is not a direct measure of muscle strength. Each value is a separate published centile, so stroke and end-systolic volume need not sum exactly to end-diastolic volume, and no ejection fraction is derived from centiles. Size, pump and muscle values do not change the sample ECG, and the 4D motion depth is still illustrative.
 
 The sample ECG uses median heart rate, PR, P and QRS duration, Bazett QTc and frontal axes from [Rijnbeek et al. (2001)](https://doi.org/10.1053/euhj.2000.2399) for children aged 1–16 and [Rijnbeek et al. (2014)](https://doi.org/10.1016/j.jelectrocard.2014.07.022) for adult men. Wave shapes, front–back loop components, T-wave size, adult amplitudes, the pediatric T-wave axis, and the electromechanical delay are illustrative. It is not computed from the 3D mesh, heart size does not change it, and it is not a patient ECG or diagnostic.
 
@@ -44,11 +60,14 @@ All application asset paths are relative so the site works at the `/heartverse-s
 
 - `dist/index.html`, `dist/style.css`, `dist/studio.css`: interface and responsive design.
 - `dist/app.js`, `dist/appearance.js`: anatomy viewer, appearance, and illustrative motion.
-- `dist/reference.js`: published reference values and bounded lookup, including the cited ECG norms.
+- `dist/reference.js`: published reference values and bounded lookup, including the cited ECG norms, heart-function, muscle and height references.
 - `dist/ecg.js`: sample ECG and 3D loop model.
 - `dist/cycle-profile.js`: shared cycle timing measured from the Time2Track ground-truth frames.
 - `checks/time2track-profile.mjs`: re-measures that profile from the frame atlas (see the file header for the macOS command).
 - `checks/ecg.mjs`: measures every sample ECG and checks it against the cited norms (`node checks/ecg.mjs`).
+- `checks/verify-physiology.py`: compares all 661 heart-function, muscle, height and adult values with the Xu and SCMR source XML (`python3 checks/verify-physiology.py`).
+- `checks/physiology.mjs`: checks every BSA and height row, centile order and invalid inputs (`node checks/physiology.mjs`).
+- `dist/physiology.css`: heart-function panel and size-measure switch.
 - `dist/research-motion.js`: released motion-example player.
 - `dist/method-figure.js`: research figure enlargement and zoom.
 - `dist/media/research/`: original method PDF, web image, and exact caption.

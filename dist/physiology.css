@@ -1,0 +1,14 @@
+/* Heart-function panel and size-measure switch. Loaded after studio.css. */
+#size-by-group{margin-bottom:16px}
+#size-by-group .segmented{margin-top:8px}
+.function-panel{margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
+.function-panel>.eyebrow{font-size:10px;margin-bottom:6px}
+.fn-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:16px 0 2px;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent)}
+.fn-head small{font-size:10px;letter-spacing:0;text-transform:none;color:#91a3a6;text-align:right}
+.function-panel .metric-row{padding:10px 0;font-size:11px}
+.function-panel .metric-row>div>small{font-size:10px;margin-top:3px;line-height:1.4}
+.function-panel .metric-row strong{font-size:13px;text-align:right}
+.function-panel .metric-row strong small{font-size:10px;margin-left:2px}
+.fn-foot{font-size:10px;line-height:1.6;color:#91a3a6;margin:12px 0 0}
+@media (max-width:1100px) and (min-width:761px){.function-panel{grid-column:1/-1}}
+.volume-card #pump-line{display:block;font-size:10px;color:#a2b0af;margin-top:4px;letter-spacing:0}

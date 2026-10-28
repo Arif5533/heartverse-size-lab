@@ -98,3 +98,107 @@ export const ecgReference = {
   // Not reported in the tables above; fixed, illustrative display choices.
   illustrative: { pediatricTAxis: 45, tII: 0.3, adultRII: 1.1, adultPII: 0.12 }
 };
+
+// Heart function, muscle and height references for children, with the
+// matching adult values. Each array is [5th, 50th, 95th] centiles by row.
+// Xu 2025 Tables 5–7: LVESV, LVSV and LV mass on the same 14 BSA rows and
+// segmentation as Table 4. Tables 1–2: heart rate during MRI (median, IQR)
+// and LVEF (mean ± SD) by sex, not by BSA.
+// SCMR 2025 Tables 24, 26 and 28 reproduce Voges et al. 2023 (by body height,
+// 1.5T, clinically referred children with normal CMR, UK/Germany):
+// volumes with papillary muscles in the cavity, and the matching LV mass
+// without them. Rows above 180 cm are omitted. Table 104 reproduces
+// Voges et al. 2022 LV global longitudinal strain by height (both sexes).
+// SCMR Tables 48–49 reproduce Krupickova et al. 2021 mid-ventricular wall
+// thickness by BSA (0.8–2.2 m²; no rows below 0.8 m²).
+// Adults: SCMR Table 3, the same convention used by the adult volume mode.
+export const physiologyReference = {
+  bsa: {
+    study: 'Xu et al. (2025)', doi: reference.doi,
+    tables: {lvesv:'https://pmc.ncbi.nlm.nih.gov/articles/PMC12182818/#tbl0025',lvsv:'https://pmc.ncbi.nlm.nih.gov/articles/PMC12182818/#tbl0030',lvm:'https://pmc.ncbi.nlm.nih.gov/articles/PMC12182818/#tbl0035'},
+    male: {
+      lvesv:{p5:[12.1,14.3,16.7,19.1,20.9,23.2,26.1,29,32.2,35.7,39.3,42.8,46.2,49.5],p50:[15.8,18.7,21.8,25,27.3,30.3,34.2,38,42.1,46.7,51.4,56,60.4,64.8],p95:[19.7,23.3,27.1,31.1,34,37.8,42.5,47.3,52.4,58.1,64,69.7,75.2,80.6]},
+      lvsv:{p5:[21.4,25.6,29.7,33.4,36.6,40.6,45.3,50,54.6,59.1,63,66.4,69.4,72.4],p50:[26.3,31.4,36.4,40.9,44.9,49.7,55.5,61.2,66.9,72.3,77.1,81.3,85,88.6],p95:[32.3,38.5,44.7,50.3,55.1,61.1,68.1,75.2,82.2,88.9,94.7,99.9,104.5,108.9]},
+      lvm:{p5:[16.8,19.8,22.8,25.9,28.8,32.3,36.8,41.4,46.2,51.1,55.5,59.3,62.9,66.4],p50:[21.4,25.2,28.9,32.9,36.6,41.1,46.7,52.5,58.6,65,70.5,75.3,79.9,84.4],p95:[26.7,31.4,36.1,41,45.7,51.3,58.4,65.6,73.2,81.2,88.1,94.1,99.8,105.4]}
+    },
+    female: {
+      lvesv:{p5:[11,13.8,16.4,18.9,21.5,23.9,26.3,28.7,31.2,33.2,34.8,36.2,37.5,38.8],p50:[14.4,18,21.4,24.7,28.1,31.3,34.3,37.6,40.7,43.4,45.5,47.3,49,50.7],p95:[17.3,21.6,25.8,29.7,33.7,37.6,41.3,45.2,49,52.2,54.8,56.9,58.9,61]},
+      lvsv:{p5:[21,24.8,28.6,32.4,36.2,40.2,44,47.6,51.2,54.3,57,59.4,61.7,64],p50:[25.5,30.2,34.8,39.4,44.1,49,53.6,58,62.4,66.2,69.5,72.3,75.1,77.9],p95:[29.9,35.3,40.7,46.1,51.6,57.3,62.7,67.9,72.9,77.4,81.2,84.6,87.8,91.1]},
+      lvm:{p5:[14.1,18.6,22.6,25.9,29,32.3,35.7,39.4,42.7,45.7,48.7,51.7,54.6,57.6],p50:[17.2,22.6,27.5,31.5,35.2,39.2,43.4,47.8,51.9,55.5,59.1,62.8,66.4,70],p95:[20.4,26.9,32.7,37.4,41.8,46.6,51.6,56.9,61.7,66,70.3,74.6,78.9,83.2]}
+    },
+    // Table 2 "Total" columns (mean ± SD) and Table 1 heart rate (median [IQR]).
+    lvef: {male:{mean:61.6,sd:2.8,n:102},female:{mean:61.2,sd:2.6,n:89}},
+    mriHeartRate: {male:{median:80.6,iqr:[71.5,93.2]},female:{median:81.9,iqr:[70.6,92]}}
+  },
+  height: {
+    study: 'Voges et al. (2023), reproduced in SCMR 2025 Tables 24, 26, 28',
+    primaryDoi: 'https://doi.org/10.1002/jmri.28299', doi: adultReference.doi,
+    tables: {male:'https://pmc.ncbi.nlm.nih.gov/articles/PMC12159681/#tbl0120',female:'https://pmc.ncbi.nlm.nih.gov/articles/PMC12159681/#tbl0130',lvm:'https://pmc.ncbi.nlm.nih.gov/articles/PMC12159681/#tbl0140'},
+    population: '154 children (101 boys) referred for CMR without cardiovascular disease, UK and Germany; 1.5T bSSFP; mean age 13.9 ± 2.8 years',
+    segmentation: 'Papillary muscles and trabeculations in the cavity volume; LV mass excludes them',
+    baseline: 140,
+    male: {
+      height:[110,120,130,140,150,160,170,180],
+      lvedv:{p5:[47,55,65,75,88,102,118,136],p50:[58,69,81,95,112,132,155,182],p95:[93,108,119,130,147,167,191,220]},
+      lvesv:{p5:[16,19,23,27,33,39,45,53],p50:[21,26,31,38,45,55,66,80],p95:[29,36,43,52,64,77,93,113]},
+      lvsv:{p5:[19,28,36,44,51,59,67,76],p50:[28,39,49,59,70,80,90,101],p95:[38,50,62,75,88,101,114,126]},
+      lvm:{p5:[24,28,34,40,47,56,66,78],p50:[32,38,45,54,64,77,92,110],p95:[39,47,56,68,82,99,120,145]}
+    },
+    female: {
+      height:[120,130,140,150,160,170,180],
+      lvedv:{p5:[17,37,56,75,95,114,132],p50:[55,72,89,105,122,139,156],p95:[94,107,121,135,150,164,179]},
+      lvesv:{p5:[13,19,25,31,37,43,49],p50:[26,33,39,46,52,59,66],p95:[39,46,53,60,68,75,82]},
+      lvsv:{p5:[14,23,32,41,49,58,67],p50:[29,39,49,59,70,80,90],p95:[44,55,67,78,90,102,113]},
+      lvm:{p5:[20,27,34,41,48,54,60],p50:[34,43,52,61,70,79,88],p95:[47,58,69,81,92,104,116]}
+    }
+  },
+  strain: {
+    study: 'Voges et al. (2022), reproduced in SCMR 2025 Table 104', primaryDoi: 'https://doi.org/10.1002/jmri.28073',
+    table: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC12159681/#tbl0520',
+    population: '157 children aged 5–18 (both sexes combined); CMR feature tracking',
+    height:[100,110,120,130,140,150,160,170,180],
+    gls:{p5:[-30.5,-29.7,-28.9,-28.1,-27.3,-26.6,-25.8,-25.1,-24.3],p50:[-24.5,-23.9,-23.4,-22.8,-22.2,-21.7,-21.1,-20.6,-20],p95:[-18.5,-18.2,-17.9,-17.5,-17.2,-16.8,-16.4,-16.1,-15.7]}
+  },
+  thickness: {
+    study: 'Krupickova et al. (2021), reproduced in SCMR 2025 Tables 48–49', primaryDoi: 'https://doi.org/10.1186/s12968-020-00692-2',
+    tables: {male:'https://pmc.ncbi.nlm.nih.gov/articles/PMC12159681/#tbl0240',female:'https://pmc.ncbi.nlm.nih.gov/articles/PMC12159681/#tbl0245'},
+    population: '161 children aged 6–18 referred for CMR without cardiovascular disease, UK and Germany; 1.5T',
+    level: 'Mid-ventricular, diastole',
+    bsa:[0.8,0.9,1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2,2.1,2.2],
+    male:{p5:[2.3,2.5,2.7,2.9,3.1,3.3,3.5,3.8,4,4.3,4.5,4.8,5.1,5.4,5.7],p50:[3.4,3.6,3.8,4.1,4.3,4.5,4.7,5,5.2,5.4,5.6,5.9,6.1,6.3,6.5],p95:[4.5,4.7,5,5.2,5.5,5.7,5.9,6.1,6.3,6.5,6.7,6.9,7,7.2,7.4]},
+    female:{p5:[3.3,3.3,3.3,3.3,3.3,3.3,3.3,3.4,3.5,3.7,4,4.4,5,5.6,6.3],p50:[3.6,3.6,3.7,3.7,3.8,3.9,4.1,4.3,4.6,5,5.3,5.7,6.1,6.6,7.1],p95:[4,4.1,4.3,4.5,4.7,4.9,5.3,5.6,5.9,6.2,6.4,6.6,6.9,7.3,7.8]}
+  },
+  // SCMR Table 3, mean ± SD and lower–upper limits. Women are the girls' comparison.
+  adult: {
+    study: 'SCMR 2025 Table 3', table: adultReference.table,
+    male: {lvedv:[143,31,81,204],lvesv:[52,18,17,88],lvsv:[91,19,53,128],lvef:[64,7,51,77],lvm:[105,23,60,150],co:[6.1,1.3,3.6,8.6]},
+    female: {lvedv:[113,23,68,158],lvesv:[39,13,14,63],lvsv:[74,15,45,103],lvef:[66,6,54,79],lvm:[74,14,47,101],co:[4.9,1.1,2.9,7]}
+  },
+  checked: '2026-10-28'
+};
+const centile=(set,i)=>({p5:set.p5[i],p50:set.p50[i],p95:set.p95[i]});
+export function lookupHeight(height,sex) {
+  const row=physiologyReference.height[sex];
+  const index=row?row.height.indexOf(height):-1;
+  if(index<0) throw new RangeError('Select a published 10 cm height row for the study sex group.');
+  const edv=centile(row.lvedv,index),base=row.lvedv.p50[row.height.indexOf(physiologyReference.height.baseline)];
+  return {height,sex,volume:edv.p50,p5:edv.p5,p95:edv.p95,baseline:base,scale:Math.cbrt(edv.p50/base)};
+}
+// Function and muscle readings for the active size setting. No EF is derived
+// from centiles: separate medians need not satisfy SV + ESV = EDV.
+export function physiologyAt(population,sex,setting) {
+  const p=physiologyReference;
+  if(population==='adult-men'){
+    const a=p.adult.male;
+    return {source:'adult',lvedv:a.lvedv,lvesv:a.lvesv,lvsv:a.lvsv,lvef:a.lvef,lvm:a.lvm,co:a.co};
+  }
+  if(setting.height!==undefined){
+    const row=p.height[sex],i=row.height.indexOf(setting.height),g=p.strain.height.indexOf(setting.height);
+    if(i<0)throw new RangeError('Select a published height row.');
+    return {source:'height',lvedv:centile(row.lvedv,i),lvesv:centile(row.lvesv,i),lvsv:centile(row.lvsv,i),lvm:centile(row.lvm,i),gls:g<0?null:centile(p.strain.gls,g)};
+  }
+  const i=reference.bsa.findIndex(v=>Math.abs(v-setting.bsa)<1e-8),t=p.thickness.bsa.findIndex(v=>Math.abs(v-setting.bsa)<1e-8);
+  if(i<0||!['female','male'].includes(sex))throw new RangeError('Select a published BSA step and study sex group.');
+  const row=p.bsa[sex];
+  return {source:'bsa',lvedv:centile(reference[sex],i),lvesv:centile(row.lvesv,i),lvsv:centile(row.lvsv,i),lvm:centile(row.lvm,i),lvef:p.bsa.lvef[sex],thickness:t<0?null:centile(p.thickness[sex],t)};
+}
