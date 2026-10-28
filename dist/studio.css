@@ -175,3 +175,19 @@ main{margin:14px 22px;gap:14px;grid-template-columns:238px minmax(350px,1fr) 330
 #research-sync{flex:none;font-size:10px;padding:4px 9px;border:1px solid #bedbc22b;border-radius:999px;color:#9fb3b4}
 #research-sync[aria-pressed="true"]{color:#122027;background:#d8c49f;border-color:#d8c49f}
 #research-rate:disabled{opacity:.45;cursor:not-allowed}
+
+/* Progress overview, profile and simulator chapters. */
+.research-progress .preparation-task{margin-bottom:22px}
+.progress-table th a,.research-chapter a,.research-next-steps .status-badge a{color:#cfe6dc;text-underline-offset:3px}
+.results-table td.wrap{white-space:normal;line-height:1.7}
+.progress-table td{white-space:normal}.progress-table td:last-child{white-space:nowrap}
+.status-badge{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:.3px;padding:3px 9px;border-radius:20px;border:1px solid;vertical-align:1px}
+.status-badge.done{color:#9fd6bd;border-color:#9fd6bd55;background:#9fd6bd12}
+.status-badge.active{color:#e5c58f;border-color:#e5c58f55;background:#e5c58f12}
+.status-badge.planned{color:#a9bcc4;border-color:#a9bcc445;background:#a9bcc40c}
+.research-next-steps .status-badge{margin-right:6px}
+.research-chapter .transferability-heading .eyebrow{margin-bottom:10px}
+.research-chapter .transferability-heading strong{color:#edf4f1;font-weight:600}
+.research-chapter>.research-results,.research-chapter>.results-figure{margin-top:24px}
+.results-note{margin:18px 0 0;font-size:13px;line-height:1.8;color:#b3c5ca}
+@media(max-width:680px){.results-note{font-size:12px}.status-badge{font-size:10px}}
