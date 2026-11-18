@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1216"><title>Heartverse · Child heart lab</title><meta property="og:title" content="Heartverse · Child heart lab"><meta name="description" content="Study a child's heart and ECG: follow one heartbeat through the heart, see how the 12 ECG leads record it, see how the normal ECG changes from age 1 to 14, and see why a QT reading can pass or fail depending on the formula."><link rel="stylesheet" href="./child.css?v=8"><script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/controls/OrbitControls.js":"./vendor/OrbitControls.js"}}</script></head>
+<body data-section="beat">
+<header><a class="brand" href="./child.html" aria-label="Heartverse child heart lab"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 27C9 23 3 17 5 10c1-5 8-6 11-1 4-6 11-3 11 3 0 6-6 12-11 15Z"/><path d="m7 16 5 0 3-5 3 9 3-4h5"/></svg><span>Heartverse<span class="brand-dot">.</span></span></a>
+<div class="sections" role="tablist" aria-label="Study sections">
+<button role="tab" data-section-tab="beat" aria-selected="true"><span>1</span>How a heartbeat works</button>
+<button role="tab" data-section-tab="growth" aria-selected="false"><span>2</span>Growing up</button>
+<button role="tab" data-section-tab="qt" aria-selected="false"><span>3</span>QT readings</button>
+</div>
+<nav aria-label="Heartverse pages"><a href="./child.html" aria-current="page">Child heart lab</a><button type="button" id="open-method">How it works</button><a href="./index.html">Anatomy studio</a><a href="./index.html#research">Research</a></nav></header>
+<main>
+<aside class="panel controls" aria-label="Child and section controls">
+<div data-for="beat"><div class="eyebrow">CHILD HEART LAB · 1</div><h1>One heartbeat,<br><em>slowed down.</em></h1>
+<p class="intro">Follow the electrical wave through a typical child’s heart<sup class="cite" data-cite="hv2"></sup>, and see how the 12 ECG leads each record the same wave from a different side<sup class="cite" data-cite="burger1946"></sup>.</p></div>
+<div data-for="growth" hidden><div class="eyebrow">CHILD HEART LAB · 2</div><h1>From 1 to 14,<br><em>the ECG grows up.</em></h1>
+<p class="intro">A normal ECG changes a lot through childhood. See the normal range at each age from real children<sup class="cite" data-cite="hv1"></sup> and published references<sup class="cite" data-cite="rijnbeek2001 saarel2018"></sup>, and compare a young child’s ECG with an older child’s.</p></div>
+<div data-for="qt" hidden><div class="eyebrow">CHILD HEART LAB · 3</div><h1>One child.<br><em>Two verdicts.</em></h1>
+<p class="intro">A child’s QT reading can pass or fail depending on the formula used to correct it for heart rate<sup class="cite" data-cite="andrsova2020 hvqt"></sup>. Pick a child and change the heart rate to see it happen.</p></div>
+
+<div class="section-label"><span>01</span> The child</div>
+<div class="slider-title"><label for="age">Age</label><output for="age" id="age-value">8<span>years</span></output></div>
+<input id="age" type="range" min="1" max="14" step="1" value="8">
+<div class="range-labels"><span>1 year</span><span id="height-note"></span><span>14 years</span></div>
+<div class="segmented" role="group" aria-label="Sex"><button data-sex="female" class="active" aria-pressed="true">Girl</button><button data-sex="male" aria-pressed="false">Boy</button></div>
+
+<div data-for="beat qt"><div class="section-label second"><span>02</span> Heart rate</div>
+<div class="slider-title"><label for="hr">Heart rate</label><output for="hr" id="hr-value">87<span>bpm</span></output></div>
+<input id="hr" type="range" min="50" max="190" step="1" value="87" aria-describedby="hr-context">
+<div class="range-labels"><span>50</span><button id="hr-rest" type="button">Resting rate for age</button><span>190</span></div>
+<p class="note" id="hr-context"></p></div>
+
+<div data-for="beat"><div class="section-label second"><span>03</span> Show</div>
+<div class="toggles" role="group" aria-label="Layers on the heart">
+<button data-layer="path" aria-pressed="true"><i style="--c:#ffe7a3"></i>Electrical path</button>
+<button data-layer="vector" aria-pressed="true"><i style="--c:#f2d39b"></i>Heart arrow and loops</button>
+<button data-layer="lead" aria-pressed="true"><i style="--c:#c9d8ff"></i>Lead direction</button></div>
+<div class="section-label second"><span>04</span> Lead</div>
+<div class="lead-grid" role="group" aria-label="Choose a lead" id="lead-grid"></div>
+<p class="note">Or click a lead on the 12-lead ECG.</p></div>
+
+<div data-for="growth" hidden><div class="section-label second"><span>02</span> Measurement</div>
+<div class="chips" role="group" aria-label="Measurement" id="measure-chips"></div>
+<div class="section-label second"><span>03</span> Compare with</div>
+<div class="slider-title"><label for="age-b">Second age</label><output for="age-b" id="age-b-value">14<span>years</span></output></div>
+<input id="age-b" type="range" min="1" max="14" step="1" value="14">
+<div class="range-labels"><span>1 year</span><span>14 years</span></div></div>
+
+<div data-for="qt" hidden><div class="section-label second"><span>03</span> This child’s QT</div>
+<div class="segmented" role="group" aria-label="QT level"><button data-level="p50" class="active" aria-pressed="true">Typical</button><button data-level="p90" aria-pressed="false">Upper-normal</button></div>
+<p class="note" id="level-note"></p></div>
+
+<div class="section-label second"><span id="view-number">05</span> View</div>
+<div class="segmented" role="group" aria-label="View"><button data-view="child" class="active" aria-pressed="true">Whole</button><button data-view="body" aria-pressed="false">Body</button><button data-view="face" aria-pressed="false" hidden>Face</button><button data-view="heart" aria-pressed="false">Heart</button></div>
+<div class="field-label">Body</div><div class="segmented" role="group" aria-label="Body appearance"><button data-look="transparent" class="active" aria-pressed="true">Transparent</button><button data-look="skin" aria-pressed="false">Skin</button></div>
+<div class="field-label">Skin tone</div><div class="swatches" role="group" aria-label="Skin tone"><button data-tone="light" aria-pressed="false" aria-label="Light" style="--c:#efc5a6"></button><button data-tone="medium" class="active" aria-pressed="true" aria-label="Medium" style="--c:#cf9670"></button><button data-tone="tan" aria-pressed="false" aria-label="Tan" style="--c:#a46c48"></button><button data-tone="deep" aria-pressed="false" aria-label="Deep" style="--c:#64402c"></button></div>
+</aside>
+
+<section class="stage" aria-label="Child figure with a beating heart">
+<div id="canvas-wrap"><div id="loading"><span>Preparing the heart… <b id="loading-pct">0%</b></span></div><div id="labels" aria-hidden="true"></div></div>
+<div class="stage-heading"><span class="eyebrow" id="stage-eyebrow">ONE HEARTBEAT, SLOWED DOWN</span><h2 id="stage-title">Follow the electrical wave.</h2><div class="badges" id="badges"></div></div>
+<div class="beat-bar"><button id="play" class="round" type="button" aria-label="Pause the heartbeat" aria-pressed="true">Ⅱ</button>
+<div class="beat-stage"><span>HEARTBEAT</span><strong id="beat-stage" aria-live="off">Resting and filling</strong></div>
+<div class="scrub" data-for="beat"><input id="scrub" type="range" min="-140" max="550" step="2" value="0" aria-label="Moment in the beat"><div class="scrub-key" aria-hidden="true"><span style="--c:#7fd4c4">P</span><span style="--c:#f2d39b">QRS</span><span style="--c:#ee9a86">T</span></div></div>
+<div class="legend" data-for="qt" hidden><i class="glow"></i> Glow marks the QT interval</div>
+<select id="rate" aria-label="Playback speed"><option value="1">1× real time</option><option value="0.5">½×</option><option value="0.25">¼×</option><option value="0.125">⅛×</option><option value="0.0625">1⁄16×</option></select></div>
+</section>
+
+<div class="rail">
+<!-- 1 · How a heartbeat works -->
+<section class="panel wide" data-for="beat" aria-labelledby="twelve-title"><div class="card-head"><h3 id="twelve-title">12-lead ECG · one beat</h3>
+<div class="mini-seg" role="group" aria-label="ECG gain"><button data-gain="10" class="active" aria-pressed="true">10 mm/mV</button><button data-gain="5" aria-pressed="false">5 mm/mV</button></div></div>
+<canvas id="twelve" role="img" aria-label="12-lead ECG of one heartbeat"></canvas>
+<p class="readout" id="twelve-readout"></p>
+<p class="note">Paper speed 25 mm/s<sup class="cite" data-cite="umedic kligfield2007"></sup>. The white line marks the same moment in all twelve leads. Click a lead to choose it.</p></section>
+
+<section class="panel" data-for="beat" aria-labelledby="phase-title" aria-live="polite"><div class="card-head"><h3 id="phase-title">Right now in this beat</h3><span class="tag" id="phase-chip">Timing from data</span></div>
+<p class="phase-name" id="phase-name"></p><p class="lead" id="phase-text"></p><p class="note" id="phase-number"></p></section>
+
+<section class="panel" data-for="beat" aria-labelledby="lead-title"><div class="card-head"><h3 id="lead-title">How lead II sees the heart</h3><span id="lead-mv" class="mv"></span></div>
+<p class="lead" id="lead-text"></p>
+<canvas id="planes" role="img" aria-label="The heart arrow seen from the front and from above, with the lead directions"></canvas>
+<p class="note">The rule: when the heart’s arrow points towards a lead’s positive end, that lead’s trace goes up; when it points away, the trace goes down; when it points across the lead, the trace stays near the line. The lead’s voltage is the arrow’s shadow on the lead’s direction (white dot).<sup class="cite" data-cite="burger1946"></sup></p>
+<p class="note" id="lead-note"></p><p class="source" id="lead-source"></p></section>
+
+<section class="panel" data-for="beat" aria-labelledby="trust-title"><div class="card-head"><h3 id="trust-title">How close to real children?</h3><span id="trust-band"></span></div>
+<p class="lead" id="trust-text"></p><p class="note warn" id="trust-flag" hidden></p>
+<ul class="facts"><li><b>From data</b> The twelve lead waves, the heart arrow and its loops, and the P, PR, QRS and QT times: the Heartverse simulator, fitted to the ECGs of <span data-n="children"></span> children aged 1–14 whose ECGs were read as normal (one hospital).<sup class="cite" data-cite="tan2025 hv2"></sup></li>
+<li><b>Drawn for teaching</b> The conduction path and where it sits<sup class="cite" data-cite="openstax"></sup>, the order the glow spreads over the heart (the human sequence of Durrer 1970)<sup class="cite" data-cite="durrer1970 macalpin2003"></sup>, and the heart’s shape and size (an adult atlas heart refitted to the child)<sup class="cite" data-cite="hra"></sup>.</li></ul></section>
+
+<!-- 2 · Growing up -->
+<section class="panel wide" data-for="growth" hidden aria-labelledby="growth-title"><div class="card-head"><h3 id="growth-title">Heart rate</h3><span id="growth-who">Girls</span></div>
+<canvas id="growth-chart" role="img" aria-label="Normal values by age"></canvas>
+<div class="key growth-key" id="growth-key"></div>
+<p class="lead" id="growth-main"></p><p class="note" id="growth-detail"></p><ul class="refs" id="growth-refs"></ul></section>
+
+<section class="panel" data-for="growth" hidden aria-labelledby="why-title"><div class="card-head"><h3 id="why-title">What changes, and why</h3></div>
+<p class="lead" id="growth-why"></p><p class="source" id="growth-source"></p></section>
+
+<section class="panel" data-for="growth" hidden aria-labelledby="compare-title"><div class="card-head"><h3 id="compare-title">Age 8 and age 14</h3><span>Leads II, V1, V6</span></div>
+<canvas id="compare" role="img" aria-label="ECG of the typical child at two ages"></canvas>
+<div class="key" id="compare-key"></div>
+<table class="compare-table" id="compare-table"></table>
+<p class="note">The typical simulated child at each age, one beat at the usual resting rate for that age, lined up at the start of the QRS<sup class="cite" data-cite="hv2"></sup>. Same paper scale as the 12-lead ECG (25 mm/s, 10 mm/mV)<sup class="cite" data-cite="umedic"></sup>. Numbers are measured on these simulated beats with the Stage 1 rules<sup class="cite" data-cite="hv1"></sup>.</p></section>
+
+<section class="panel" data-for="growth" hidden aria-labelledby="gnotes-title"><div class="card-head"><h3 id="gnotes-title">Reading these numbers</h3></div>
+<ul class="facts" id="growth-notes"></ul></section>
+
+<!-- 3 · QT readings -->
+<section class="panel ecg" data-for="qt" hidden aria-labelledby="ecg-title"><div class="card-head"><h3 id="ecg-title">Simulated ECG · lead II</h3><span id="ecg-rate">87 bpm</span></div>
+<canvas id="ecg-strip" role="img" aria-label="Simulated lead II ECG"></canvas>
+<p class="readout" id="ecg-readout"></p><p class="note">A simplified drawing of lead II: its P, PR, QRS and QT times come from the age profiles<sup class="cite" data-cite="hv1"></sup>; its wave shapes are drawn, not measured.</p></section>
+<section class="panel" data-for="qt" hidden aria-labelledby="readings-title"><div class="card-head"><h3 id="readings-title">What each formula reports</h3><span>Line at 440 ms<sup class="cite" data-cite="andrsova2020"></sup></span></div>
+<div class="verdict" id="verdict" role="status"></div>
+<div class="cards">
+<article class="card truth"><span class="label">True QT</span><strong id="v-qt">—</strong><span class="tag accent">Set by the simulator</span><sup class="cite" data-cite="hv1"></sup><small id="s-qt"></small></article>
+<article class="card"><span class="label">Bazett<sup class="cite" data-cite="bazett1920"></sup></span><strong id="v-bazett">—</strong><span class="tag" id="t-bazett"></span><small id="s-bazett"></small></article>
+<article class="card"><span class="label">Fridericia<sup class="cite" data-cite="fridericia1920"></sup></span><strong id="v-fridericia">—</strong><span class="tag" id="t-fridericia"></span><small id="s-fridericia"></small></article>
+<article class="card"><span class="label">Age-adaptive (Haq 2025)<sup class="cite" data-cite="haq2025"></sup></span><strong id="v-adaptive">—</strong><span class="tag" id="t-adaptive"></span><small>Corrected to the usual rate for the age, not to 60 bpm, so the 440 ms line does not apply.<sup class="cite" data-cite="haq2025"></sup></small></article>
+</div>
+<p class="note" id="timing-note"></p>
+<p class="note">Drift compares each formula with its own value for this child at the resting rate. It is measured against this simulator’s QT–heart-rate rule, so it shows how the formulas differ, not which one is right.<sup class="cite" data-cite="hv1"></sup></p></section>
+<section class="panel" data-for="qt" hidden aria-labelledby="real-title"><div class="card-head"><h3 id="real-title">In real children</h3><span id="real-n"></span></div>
+<p class="lead" id="real-lead"></p>
+<div class="bars" id="real-bars"></div>
+<p class="note" id="real-note"></p></section>
+<section class="panel refs-panel" aria-labelledby="refs-title"><div class="card-head"><h3 id="refs-title">References for this section</h3><button type="button" class="link-button" id="all-refs">All references</button></div>
+<p class="note">Every number in square brackets on this page points to one of these. Project analyses are marked unpublished.</p><ol class="ref-list compact" id="section-refs"></ol></section>
+</div>
+</main>
+<footer><span><i class="status-dot"></i> Research and teaching only. Not a diagnostic tool.</span><span>The body, organs and conduction path are illustrations. ECG waves and timing come from children with normal ECGs at one hospital.<sup class="cite" data-cite="tan2025"></sup></span><button type="button" id="open-sources">Method and references</button></footer>
+<dialog id="method" aria-labelledby="method-title">
+<div class="dialog-head"><div><div class="eyebrow">HOW IT WORKS</div><h2 id="method-title">What this lab shows, and how sure it is</h2></div><button type="button" class="round" id="close-method" aria-label="Close">✕</button></div>
+<div class="dialog-body">
+<section><h3>1 · How a heartbeat works</h3>
+<p>The heartbeat comes from the <b>Heartverse Stage 2 simulator</b><sup class="cite" data-cite="hv2"></sup>, fitted to the 12-lead ECGs of <span data-n="children"></span> children aged 1–14 whose ECGs were read as normal (ZZU paediatric ECG database, one hospital)<sup class="cite" data-cite="tan2025"></sup>. For each age and sex the page shows the <b>typical child</b>: every simulator setting at its average for that age, and the P, PR, QRS and QT times at the middle (50th centile) of the Stage 1 age profiles (<span data-n="profile"></span> children)<sup class="cite" data-cite="hv1"></sup>. Changing the heart rate moves the QT along the QT–heart-rate relation measured in the same children<sup class="cite" data-cite="hv1"></sup>.</p>
+<p>The simulator builds the beat from a <b>heart vector</b>: one arrow that sums the heart’s electrical activity at each moment. Each ECG lead records the arrow’s shadow on that lead’s direction, so twelve leads are twelve views of one arrow<sup class="cite" data-cite="burger1946"></sup>. The lead directions are the simulator’s own, fitted to the children; limb-lead directions come out close to the textbook ones<sup class="cite" data-cite="einthoven1912 goldberger1942"></sup> and the page shows both.</p>
+<p id="m-valid"></p>
+<p><b>Drawn for teaching, not measured:</b> the conduction path (sinus node, AV node, His bundle, bundle branches) and its position<sup class="cite" data-cite="openstax"></sup>, the order the glow spreads over the heart muscle (the human sequence of Durrer et al., 1970)<sup class="cite" data-cite="durrer1970 macalpin2003"></sup>, and the heart itself (an adult atlas heart refitted to the child)<sup class="cite" data-cite="hra"></sup>. The glow’s timing follows the child’s own P wave, QRS and T wave.</p>
+<p><b>Two set values, not measured in children:</b> the spark takes 35 ms to run down the His bundle and bundle branches before the QRS (in 64 adults the average was about 44 ms)<sup class="cite" data-cite="zuchowski2023"></sup>, and the heart starts to squeeze 30 ms after the QRS begins (about when the R wave peaks)<sup class="cite" data-cite="openstax"></sup>. How much the heart shrinks through the beat follows a released cardiac-cycle animation<sup class="cite" data-cite="time2track"></sup>. These change only the animation, not the ECG.</p>
+<p><b>The explanations</b> say only what their sources say, and every card carries numbered references: the conduction system and the waves<sup class="cite" data-cite="openstax"></sup>, the order inside the ventricles<sup class="cite" data-cite="durrer1970 macalpin2003"></sup>, electrode positions<sup class="cite" data-cite="kligfield2007"></sup>, the limb leads<sup class="cite" data-cite="einthoven1912 goldberger1942"></sup>, and the paper scale<sup class="cite" data-cite="umedic"></sup>.</p></section>
+<section><h3>2 · Growing up</h3>
+<p>Shaded bands are the Heartverse Stage 1 age profiles<sup class="cite" data-cite="hv1"></sup>: centiles by age and sex from <span data-n="profile"></span> children whose ECGs were read as normal at one hospital (ZZU)<sup class="cite" data-cite="tan2025"></sup>, measured with the same software throughout. Points are published normal values: Rijnbeek et al. 2001 (healthy Dutch children)<sup class="cite" data-cite="rijnbeek2001"></sup> and Saarel et al. 2018 (Pediatric Heart Network, North America)<sup class="cite" data-cite="saarel2018"></sup>, median with 2nd–98th centile where reported. The sources used different machines and measuring methods, so their numbers differ; seeing the spread is part of the lesson.</p>
+<p>Each “why” note carries its references, mostly Dickinson 2005<sup class="cite" data-cite="dickinson2005"></sup>, and says only what they say; where the sources give no reason (heart rate), the note says so. All sources compare different children at different ages; none follows the same children as they grow.</p></section>
+<section><h3>3 · QT readings</h3>
+<p>The QT interval gets shorter as the heart beats faster<sup class="cite" data-cite="hv1"></sup>, so it is “corrected” to a standard heart rate before it is compared with a limit such as 440 ms, the borderline upper limit of normal in children<sup class="cite" data-cite="andrsova2020"></sup>. Bazett’s formula is the standard one for children’s ECGs, and at fast heart rates it gives artificially long values, so a normal child can be flagged as having a long QT<sup class="cite" data-cite="andrsova2020"></sup>.</p>
+<p id="m-real"></p>
+<p>For the chosen age and sex, the <b>true QT</b> is the typical (50th centile) or upper-normal (90th centile) QT of children of that age, from the Stage 1 age profiles<sup class="cite" data-cite="hv1"></sup>. Changing the heart rate moves the QT along the QT–heart-rate relation measured in the same children for that age group; its exponent falls from about <span id="qt-exp-young"></span> at ages 1–2 to <span id="qt-exp-old"></span> at ages 10–14<sup class="cite" data-cite="hv1"></sup>. The same QT is then corrected three ways:</p>
+<ul class="formulas">
+<li><b>Bazett</b> · QTc = QT / RR<sup>1/2</sup><sup class="cite" data-cite="bazett1920"></sup></li>
+<li><b>Fridericia</b> · QTc = QT / RR<sup>1/3</sup><sup class="cite" data-cite="fridericia1920"></sup></li>
+<li><b>Age-adaptive (Haq et al., 2025)</b> · QTc = QT + 0.75·x<sup>0.12</sup>·(HR + 10.8·ln x − 154), with x the age in weeks. It corrects to the usual heart rate for the age, not to 60 bpm, so the 440 ms line does not apply to it.<sup class="cite" data-cite="haq2025"></sup></li>
+</ul>
+<p><b>Drift</b> is how far each formula moves when only the heart rate changes for the same child. A perfect correction would not move. Drift is measured against this simulator’s own QT–heart-rate rule, so it shows that the formulas disagree, not which one is right.<sup class="cite" data-cite="hv1"></sup></p>
+<p id="m-check"></p></section>
+<section><h3>The 3D figure</h3>
+<p>The body shape is MakeHuman’s base body<sup class="cite" data-cite="makehuman"></sup>, generated at 1, 10 and 14 years and blended for the ages in between, scaled to the WHO median height for the age (girls and boys averaged)<sup class="cite" data-cite="who2006 deonis2007"></sup>. The heart, lungs, liver, airway, abdominal organs and the vessels of the trunk come from the Human Reference Atlas (one adult man)<sup class="cite" data-cite="hra"></sup> and are refitted to each child, so their sizes and positions are illustrative, not paediatric measurements. The atlas has no arm or leg vessels; the main ones are drawn along the child’s joints following their textbook courses<sup class="cite" data-cite="openstax20"></sup>. The heart’s squeeze follows a released cardiac-cycle animation<sup class="cite" data-cite="time2track"></sup>. In the QT readings section the heart close-up uses a detailed cutaway model<sup class="cite" data-cite="marxtrax"></sup>.</p></section>
+<section><h3>Limits</h3>
+<ul>
+<li>All ECG data come from one hospital and one ECG machine (ZZU, China)<sup class="cite" data-cite="tan2025"></sup>. Published values from other countries are shown alongside for that reason<sup class="cite" data-cite="rijnbeek2001 saarel2018"></sup>.</li>
+<li>Only <span data-n="young"></span> of the <span data-n="profile"></span> children are aged 1–2 years. At these ages the typical child’s QT is short and its PR long compared with real children of the same age; the page says so where it matters.<sup class="cite" data-cite="hv1 hv2"></sup></li>
+<li>Age data compare different children at different ages rather than following children as they grow.<sup class="cite" data-cite="hv1 rijnbeek2001 saarel2018"></sup></li>
+<li>Nobody’s true QT is known in real recordings, so the real-children figures show disagreement between formulas, not errors.<sup class="cite" data-cite="hvqt"></sup></li>
+<li>This page is for research and teaching. It does not diagnose anyone and must not be used for clinical decisions.</li>
+</ul></section>
+<section><h3>References</h3>
+<p>Published references were checked against Crossref (DOI, title, journal, volume, pages) and, where the text is openly available, against the text. Licences are given with each model and dataset.</p>
+<ol class="ref-list" id="ref-list"></ol></section>
+</div></dialog>
+<script type="module" src="./child.js?v=35"></script>
+</body>
+</html>

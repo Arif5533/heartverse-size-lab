@@ -1,0 +1,13 @@
+Child body shapes for the Heartverse child heart lab.
+
+Source: MakeHuman base mesh and macro (age) targets, generated with the MPFB add-on 2.0.18 in Blender 5.3.0
+by tools/generate_body.py on 2026-11-17. Three shapes on one mesh: baby (1 year), child (10 years), 14 years.
+Includes MakeHuman's eye and eyelash helpers and its tights helper cut to shorts; lips and nails weights from
+MPFB's skin masks; scalp from MPFB's scalp face list. One level of subdivision.
+Settings: neutral gender, average muscle, weight, proportions and height, equal ethnicity mix.
+
+Licence: MakeHuman core assets are shared under CC0.
+https://static.makehumancommunity.org/about/license.html
+
+The page interpolates between the shapes by age and scales the body to a rounded typical height.
+It is an illustration of body shape, not a measurement of any child.

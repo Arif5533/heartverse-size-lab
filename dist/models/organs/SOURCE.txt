@@ -1,0 +1,10 @@
+Organs and blood vessels for the Heartverse child heart lab.
+
+Source: HuBMAP Human Reference Atlas, 3D reference organs from the Visible Human Male
+(Kristen Browne, Heidi Schlehlein; HuBMAP CCF 3D Reference Object Library, https://humanatlas.io/3d-reference-library).
+Licence: Creative Commons Attribution 4.0 International (https://creativecommons.org/licenses/by/4.0/).
+Files: listed with their download addresses in organs.json ("source_files").
+
+Changes: outer surfaces kept, meshes decimated, organs grouped and recoloured, coordinates converted
+(tools/build_organs.py, 2026-11-17). At display time the adult organs are refitted to each child's body
+(dist/organs.js). They are not paediatric organ measurements.
