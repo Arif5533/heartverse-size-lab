@@ -88,7 +88,7 @@ function updateBeatPanels(){
   $('twelve-title').textContent=`12-lead ECG · typical ${who}, ${age} ${age===1?'year':'years'}`;
   $('twelve-readout').innerHTML=`PR <b>${Math.round(hb.pr)}</b><i>·</i>QRS <b>${Math.round(hb.qrs)}</b><i>·</i>QT <b>${Math.round(hb.qt)}</b> ms<i>·</i>${Math.round(hb.hr)} bpm<i>·</i>QRS axis <b>${signed(qrsAxis(hb))}°</b>${cite('hv1','hv2')}`;
   updateLeadCard();
-  {const e=hb.beatTime(hbTime);phaseShown=phaseOf(e);showPhase(phaseShown);}   // fill the phase card even before the animation runs
+  renderPhases();{const e=hb.beatTime(hbTime);phaseShown=phaseOf(e);showPhase(phaseShown);}   // fill the phase card even before the animation runs
   // how close the typical child is to real children of this age (vcg-simulator/export_web.py validation)
   const v=heart.data.validation[sex][String(age)],[b0,b1]=v.template_band.split('-').map(Number),band=`${b0}–${b1-1}`,c=v.centiles;
   $('trust-band').textContent=`Real children aged ${band}`;
@@ -111,9 +111,16 @@ function updateLeadCard(){
 }
 function selectLead(i){state.lead=i;beat3d?.setLead(i);twelve.set(hb,{lead:i});planes.set(hb,i);updateLeadCard();writeAddress();}
 const phaseOf=e=>e<-hb.pr?'rest':e<-hb.pr+hb.p?'P':e<0?'PR':e<hb.qrs?'QRS':e<hb.qt?'T':'rest';
+// All five explanations sit in the same place, stacked; only the current one is visible. The card keeps the height
+// of the longest one, so nothing on the page moves as the beat runs, however fast the heart rate.
+const PHASE_ORDER=['P','PR','QRS','T','rest'];
+function renderPhases(){
+  $('phase-stack').innerHTML=PHASE_ORDER.map(k=>{const P=PHASES[k];
+    return `<div data-phase="${k}"><p class="phase-name">${P.title}</p><p class="lead">${P.text}${cite(P.refs)}</p><p class="note">${P.number(hb)}${cite('hv1','hv2')}</p></div>`;}).join('');
+}
 function showPhase(phase){
-  const P=PHASES[phase];$('phase-name').textContent=P.title;$('phase-text').innerHTML=P.text+cite(P.refs);$('phase-number').innerHTML=P.number(hb)+cite('hv1','hv2');
-  $('phase-chip').textContent=phase==='PR'?'Timing from data · path drawn':'Timing from data';
+  document.querySelectorAll('#phase-stack>[data-phase]').forEach(el=>el.classList.toggle('active',el.dataset.phase===phase));
+  document.querySelectorAll('#phase-steps [data-step]').forEach(el=>{const on=el.dataset.step===phase;el.classList.toggle('active',on);if(on)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');});
 }
 function beatFrame(e,now){
   const phase=phaseOf(e),{a,v}=hb.vectorAt(e,0,-1),vec=phase==='P'||(phase==='PR'&&e<-hb.pr+hb.p+10)?a:v;
