@@ -1,0 +1,235 @@
+{
+ "format": 1,
+ "generated": "2026-11-18",
+ "bounds": {
+  "min": [
+   -0.133274,
+   -0.043062,
+   -0.09224
+  ],
+  "max": [
+   0.143049,
+   0.683078,
+   0.138977
+  ]
+ },
+ "groups": {
+  "arteries": {
+   "colour": "#d4202a",
+   "opacity": 1.0,
+   "vertices": 17345,
+   "indices": 118593,
+   "index_offset": 0,
+   "position_offset": 237188
+  },
+  "veins": {
+   "colour": "#2f5fd0",
+   "opacity": 1.0,
+   "vertices": 22745,
+   "indices": 134139,
+   "index_offset": 341260,
+   "position_offset": 609540
+  },
+  "heart": {
+   "colour": "#c8303a",
+   "opacity": 1.0,
+   "vertices": 16998,
+   "indices": 107172,
+   "index_offset": 746012,
+   "position_offset": 960356,
+   "attributes": {
+    "chamber": 1062344,
+    "activation_order": 1079344
+   }
+  },
+  "lungs": {
+   "colour": "#ec9fae",
+   "opacity": 0.45,
+   "vertices": 8339,
+   "indices": 58347,
+   "index_offset": 1096344,
+   "position_offset": 1213040
+  },
+  "airway": {
+   "colour": "#e8d3c4",
+   "opacity": 0.9,
+   "vertices": 5030,
+   "indices": 29604,
+   "index_offset": 1263076,
+   "position_offset": 1322284
+  },
+  "liver": {
+   "colour": "#b5523c",
+   "opacity": 0.72,
+   "vertices": 6268,
+   "indices": 37608,
+   "index_offset": 1352464,
+   "position_offset": 1427680
+  },
+  "spleen": {
+   "colour": "#8a3f63",
+   "opacity": 0.85,
+   "vertices": 5114,
+   "indices": 30360,
+   "index_offset": 1465288,
+   "position_offset": 1526008
+  },
+  "kidneys": {
+   "colour": "#9b3540",
+   "opacity": 0.95,
+   "vertices": 5153,
+   "indices": 31080,
+   "index_offset": 1556692,
+   "position_offset": 1618852
+  },
+  "pancreas": {
+   "colour": "#e3b07a",
+   "opacity": 0.8,
+   "vertices": 3532,
+   "indices": 14007,
+   "index_offset": 1649772,
+   "position_offset": 1677788
+  },
+  "small_intestine": {
+   "colour": "#e9a08e",
+   "opacity": 0.5,
+   "vertices": 11601,
+   "indices": 70368,
+   "index_offset": 1698980,
+   "position_offset": 1839716
+  },
+  "large_intestine": {
+   "colour": "#d8927a",
+   "opacity": 0.5,
+   "vertices": 10690,
+   "indices": 71742,
+   "index_offset": 1909324,
+   "position_offset": 2052808
+  },
+  "bladder": {
+   "colour": "#e6c46a",
+   "opacity": 0.75,
+   "vertices": 3618,
+   "indices": 21138,
+   "index_offset": 2116948,
+   "position_offset": 2159224
+  }
+ },
+ "landmarks": {
+  "heart": [
+   0.0051,
+   0.4775,
+   0.0366
+  ],
+  "heart_size": 0.1244,
+  "bladder": [
+   -0.0061,
+   0.0333,
+   0.0142
+  ],
+  "trachea_top": 0.6601,
+  "eye_left": [
+   0.0321,
+   0.807,
+   0.0612
+  ],
+  "eye_right": [
+   -0.0284,
+   0.8085,
+   0.0616
+  ],
+  "lungs_min": [
+   -0.125,
+   0.3856,
+   -0.0922
+  ],
+  "lungs_max": [
+   0.1344,
+   0.6147,
+   0.0975
+  ],
+  "vessels_top": 0.6831,
+  "vessels_bottom": -0.0431
+ },
+ "conduction": {
+  "sinus_node": [
+   -0.01703,
+   0.52881,
+   0.03116
+  ],
+  "av_node": [
+   0.00172,
+   0.48268,
+   0.03972
+  ],
+  "his_end": [
+   0.01814,
+   0.4724,
+   0.04837
+  ],
+  "apex": [
+   0.07634,
+   0.43597,
+   0.07901
+  ],
+  "left_bundle": [
+   [
+    0.01814,
+    0.4724,
+    0.04837
+   ],
+   [
+    0.05303,
+    0.45294,
+    0.06226
+   ],
+   [
+    0.07312,
+    0.43871,
+    0.07514
+   ],
+   [
+    0.04686,
+    0.46599,
+    0.01069
+   ]
+  ],
+  "right_bundle": [
+   [
+    0.01814,
+    0.4724,
+    0.04837
+   ],
+   [
+    0.0403,
+    0.4552,
+    0.0663
+   ],
+   [
+    -0.00556,
+    0.45369,
+    0.06332
+   ]
+  ]
+ },
+ "heart_attributes": "chamber: 0 right atrium, 1 left atrium, 2 right ventricle, 3 left ventricle. activation_order: 0-255, earliest to latest within atria or ventricles (illustrative; Durrer et al. 1970 sequence).",
+ "units": "metres, y up, front +z, body left +x (Visible Human Male frame)",
+ "source": "HuBMAP Human Reference Atlas 3D reference organs, Visible Human Male (Kristen Browne, Heidi Schlehlein; HuBMAP CCF 3D Reference Object Library)",
+ "source_files": {
+  "VH_M_Blood_Vasculature.glb": "https://cdn.humanatlas.io/hra-releases/v1.2/models/VH_M_Blood_Vasculature.glb",
+  "VH_M_Heart.glb": "https://cdn.humanatlas.io/hra-releases/v1.2/models/VH_M_Heart.glb",
+  "3d-vh-m-lung.glb": "https://cdn.humanatlas.io/hra-releases/v1.4/models/3d-vh-m-lung.glb",
+  "VH_M_Liver.glb": "https://cdn.humanatlas.io/hra-releases/v1.2/models/VH_M_Liver.glb",
+  "VH_M_Small_Intestine.glb": "https://cdn.humanatlas.io/hra-releases/v1.2/models/VH_M_Small_Intestine.glb",
+  "SBU_M_Intestine_Large.glb": "https://cdn.humanatlas.io/hra-releases/v1.2/models/SBU_M_Intestine_Large.glb",
+  "VH_M_Kidney_L.glb": "https://cdn.humanatlas.io/hra-releases/v1.2/models/VH_M_Kidney_L.glb",
+  "VH_M_Kidney_R.glb": "https://cdn.humanatlas.io/hra-releases/v1.2/models/VH_M_Kidney_R.glb",
+  "VH_M_Spleen.glb": "https://cdn.humanatlas.io/hra-releases/v1.2/models/VH_M_Spleen.glb",
+  "VH_M_Urinary_Bladder.glb": "https://cdn.humanatlas.io/hra-releases/v1.2/models/VH_M_Urinary_Bladder.glb",
+  "3d-vh-m-pancreas.glb": "https://cdn.humanatlas.io/hra-releases/v2.0/models/3d-vh-m-pancreas.glb",
+  "3d-vh-m-trachea.glb": "https://cdn.humanatlas.io/hra-releases/v1.4/models/3d-vh-m-trachea.glb",
+  "3d-vh-m-main-bronchus.glb": "https://cdn.humanatlas.io/hra-releases/v1.4/models/3d-vh-m-main-bronchus.glb"
+ },
+ "licence": "CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)",
+ "changes": "Outer surfaces kept, meshes decimated, organs grouped, coordinates converted; positions refitted to the child at display time."
+}
