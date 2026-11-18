@@ -155,3 +155,11 @@ sup.cite a{color:#8fd6c8;text-decoration:none;padding:0 1px}sup.cite a:hover{tex
 .ref-list.compact a.ref-open{color:#8fd6c8;font-weight:600;text-decoration:none;margin-right:2px}
 .link-button{font-size:11px;color:#9fd8cc;border:1px solid #abc8ca26;border-radius:999px;padding:3px 9px}
 .link-button:hover{border-color:#8fd6c866}
+/* phase card: fixed height and a step bar, so fast heart rates do not make the page jump */
+.phase-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;list-style:none;padding:0;margin:0 0 12px}
+.phase-steps li{font-size:10.5px;text-align:center;padding:5px 2px;border-radius:6px;border:1px solid #abc8ca22;color:#7f9396;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.phase-steps li.active{color:#0b1216;background:var(--c);border-color:var(--c);font-weight:600}
+.phase-stack{display:grid}.phase-stack>div{grid-area:1/1;visibility:hidden}.phase-stack>div.active{visibility:visible}
+.phase-stack .phase-name{margin-top:0}
+.mv{font-variant-numeric:tabular-nums;min-width:5.6em;text-align:right}
+.beat-stage strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

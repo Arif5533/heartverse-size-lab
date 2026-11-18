@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1216"><title>Heartverse · Child heart lab</title><meta property="og:title" content="Heartverse · Child heart lab"><meta name="description" content="Study a child's heart and ECG: follow one heartbeat through the heart, see how the 12 ECG leads record it, see how the normal ECG changes from age 1 to 14, and see why a QT reading can pass or fail depending on the formula."><link rel="stylesheet" href="./child.css?v=8"><script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/controls/OrbitControls.js":"./vendor/OrbitControls.js"}}</script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1216"><title>Heartverse · Child heart lab</title><meta property="og:title" content="Heartverse · Child heart lab"><meta name="description" content="Study a child's heart and ECG: follow one heartbeat through the heart, see how the 12 ECG leads record it, see how the normal ECG changes from age 1 to 14, and see why a QT reading can pass or fail depending on the formula."><link rel="stylesheet" href="./child.css?v=9"><script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/controls/OrbitControls.js":"./vendor/OrbitControls.js"}}</script></head>
 <body data-section="beat">
 <header><a class="brand" href="./child.html" aria-label="Heartverse child heart lab"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 27C9 23 3 17 5 10c1-5 8-6 11-1 4-6 11-3 11 3 0 6-6 12-11 15Z"/><path d="m7 16 5 0 3-5 3 9 3-4h5"/></svg><span>Heartverse<span class="brand-dot">.</span></span></a>
 <div class="sections" role="tablist" aria-label="Study sections">
@@ -74,8 +74,9 @@
 <p class="readout" id="twelve-readout"></p>
 <p class="note">Paper speed 25 mm/s<sup class="cite" data-cite="umedic kligfield2007"></sup>. The white line marks the same moment in all twelve leads. Click a lead to choose it.</p></section>
 
-<section class="panel" data-for="beat" aria-labelledby="phase-title" aria-live="polite"><div class="card-head"><h3 id="phase-title">Right now in this beat</h3><span class="tag" id="phase-chip">Timing from data</span></div>
-<p class="phase-name" id="phase-name"></p><p class="lead" id="phase-text"></p><p class="note" id="phase-number"></p></section>
+<section class="panel" data-for="beat" aria-labelledby="phase-title"><div class="card-head"><h3 id="phase-title">Right now in this beat</h3><span class="tag">Timing from data</span></div>
+<ol class="phase-steps" id="phase-steps" aria-label="Parts of one beat"><li data-step="P" style="--c:#7fd4c4">P wave</li><li data-step="PR" style="--c:#ffe7a3">AV pause</li><li data-step="QRS" style="--c:#f2d39b">QRS</li><li data-step="T" style="--c:#ee9a86">ST–T</li><li data-step="rest" style="--c:#a7b5b6">Rest</li></ol>
+<div class="phase-stack" id="phase-stack"></div></section>
 
 <section class="panel" data-for="beat" aria-labelledby="lead-title"><div class="card-head"><h3 id="lead-title">How lead II sees the heart</h3><span id="lead-mv" class="mv"></span></div>
 <p class="lead" id="lead-text"></p>
@@ -167,6 +168,6 @@
 <p>Published references were checked against Crossref (DOI, title, journal, volume, pages) and, where the text is openly available, against the text. Licences are given with each model and dataset.</p>
 <ol class="ref-list" id="ref-list"></ol></section>
 </div></dialog>
-<script type="module" src="./child.js?v=35"></script>
+<script type="module" src="./child.js?v=36"></script>
 </body>
 </html>
